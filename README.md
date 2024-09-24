@@ -1,4 +1,4 @@
-#Setup .env file
+Setup .env file
 ```
 PORT=...
 MONGO_URI=...
@@ -7,11 +7,11 @@ CLOUDINARY_CLOUD_NAME=...
 CLOUDINARY_API_KEY=...
 CLOUDINARY_API_SECRET=...
 ```
-#Build the app
+Build the app
 ```
 npm run build
 ```
-#Start the app
+Start the app
 ```
 npm start
 ```
