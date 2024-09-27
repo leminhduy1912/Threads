@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "NODE_ENV=development nodemon backend/server.js",
     "start": "NODE_ENV=production node backend/server.js",
-    "build": "npm install --legacy-peer-deps && npm install --legacy-peer-deps --prefix front-end && npm run build --prefix front-end"
+    "build": "npm install --legacy-peer-deps && npm install --legacy-peer-deps --prefix frontend && npm run build --prefix frontend"
   },
   "author": "LeMinhDuy",
   "license": "ISC",
