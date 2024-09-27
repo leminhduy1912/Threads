@@ -8,7 +8,7 @@ import { CgMoreO } from "react-icons/cg";
 import { useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
 import { Link as RouterLink } from "react-router-dom";
-import useFollowUnfollow from "../hooks/userFollowUnFollow";
+import userFollowUnfollow from "../hooks/userFollowUnfollow";
 import UpdateProfilePage from "../Modal/UpdateProfile";
 import { useState } from "react";
 
@@ -17,7 +17,7 @@ import { useState } from "react";
 const UserHeader = ({ user }) => {
 	const toast = useToast();
 	const currentUser = useRecoilValue(userAtom); // logged in user
-	const { handleFollowUnfollow, following, updating } = useFollowUnfollow(user);
+	const { handleFollowUnfollow, following, updating } = userFollowUnfollow(user);
 
 	const copyURL = () => {
 		const currentURL = window.location.href;

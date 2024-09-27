@@ -4,7 +4,7 @@ import userAtom from "../atoms/userAtom";
 import { useRecoilValue } from "recoil";
 import { clientRequest } from "../api/clientRequest";
 
-const useFollowUnfollow = (user) => {
+const userFollowUnfollow = (user) => {
 	const currentUser = useRecoilValue(userAtom);
 	const [following, setFollowing] = useState(user.followers.includes(currentUser?._id));
 	const [updating, setUpdating] = useState(false);
@@ -52,4 +52,4 @@ const useFollowUnfollow = (user) => {
 	return { handleFollowUnfollow, updating, following };
 };
 
-export default useFollowUnfollow;
+export default userFollowUnfollow;
