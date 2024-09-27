@@ -15,7 +15,7 @@
     "@chakra-ui/theme-tools": "^2.1.2",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
-    "back-end": "file:..",
+    "backend": "file:..",
     "axios": "^1.7.7",
     "cloudinary": "^2.5.0",
     "date-fns": "^4.1.0",
