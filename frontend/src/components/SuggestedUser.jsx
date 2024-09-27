@@ -1,11 +1,11 @@
 import { Avatar, Box, Button, Flex, Text } from "@chakra-ui/react";
-import useFollowUnfollow from "../hooks/userFollowUnFollow";
+import userFollowUnfollow from "../hooks/userFollowUnfollow";
 import { Link } from "react-router-dom";
 
 
 const SuggestedUser = ({user}) => {
    
-    const { handleFollowUnfollow, following, updating } = useFollowUnfollow(user);
+    const { handleFollowUnfollow, following, updating } = userFollowUnfollow(user);
   
   return (
     <Flex gap={2} justifyContent={"space-between"} alignItems={"center"}>
