@@ -20,7 +20,7 @@ connectDB();
 // job.start();
 
 const PORT = process.env.PORT || 5000;
-// const __dirname = path.resolve();
+const __dirname = path.resolve();
 
 
 const corsOptions = {
