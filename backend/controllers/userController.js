@@ -2,7 +2,7 @@ import User from "../models/userModel.js";
 import Post from "../models/postModel.js";
 import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
-import {generateToken,setCookie} from "../utils/generateTokenAndsetCookie.js"
+ import {generateTokenAndSetCookie} from "../utils/generateTokenAndsetCookie.js"
 import { v2 as cloudinary } from "cloudinary";
 
 const getUserProfile = async (req, res) => {
@@ -33,11 +33,12 @@ const getUserProfile = async (req, res) => {
 const signupUser = async (req, res) => {
 	try {
 		const { name, email, username, password } = req.body;
-		console.log("Sign up")
+		
 		const user = await User.findOne({ $or: [{ email }, { username }] });
-
+		console.log("searching",user)
 		if (user) {
 			return res.status(400).json({ error: "User already exists" });
+			
 		}
 		const salt = await bcrypt.genSalt(10);
 		const hashedPassword = await bcrypt.hash(password, salt);
@@ -48,9 +49,11 @@ const signupUser = async (req, res) => {
 			username,
 			password: hashedPassword,
 		});
+		console.log(newUser)
 		await newUser.save();
 
 		if (newUser) {
+			console.log("New User")
 			generateTokenAndSetCookie(newUser._id, res);
 
 			res.status(201).json({
@@ -95,8 +98,8 @@ const loginUser = async (req, res) => {
 	  }
   
 	  // Generate the token and set cookie
-	  const token = generateToken(user._id);
-	  setCookie(token, res);
+	  const token = generateTokenAndSetCookie(user._id,res);
+	//   setCookie(token, res);
   
 	  res.status(200).json({
 		_id: user._id,

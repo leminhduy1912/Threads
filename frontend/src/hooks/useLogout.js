@@ -2,11 +2,12 @@ import userAtom from "../atoms/userAtom";
 import { useSetRecoilState } from "recoil";
 import useShowToast from "./useShowToast";
 import { clientRequest } from "../api/clientRequest";
+import { useNavigate } from "react-router-dom";
 
 const useLogout = () => {
 	const setUser = useSetRecoilState(userAtom);
 	const showToast = useShowToast();
-
+  const navigate = useNavigate()
 	const logout = async () => {
 		try {
 			// `axios.post` takes the URL and the data object directly
@@ -25,6 +26,7 @@ const useLogout = () => {
 			// Save data to localStorage and update state
 			localStorage.removeItem("user-threads");
 			setUser(null);
+			navigate("/")
 		} catch (error) {
 			// Handle any errors that occur during the request
 			showToast("Error", error.message || "Something went wrong", "error");

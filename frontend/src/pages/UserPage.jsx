@@ -48,6 +48,7 @@ const UserPage = () => {
 
 	return (
 		<>
+
 			<UserHeader user={user} />
 
 			{!fetchingPosts && posts.length === 0 && <h1>User has not posts.</h1>}

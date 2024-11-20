@@ -14,6 +14,7 @@ import { clientRequest } from "../api/clientRequest";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 const PostPage = () => {
+	console.log("post page")
 	const { user, loading } = useGetUserProfile();
 	const [posts, setPosts] = useRecoilState(postsAtom);
 	const showToast = useShowToast();
@@ -29,6 +30,7 @@ const PostPage = () => {
 			try {
 				const res = await clientRequest.get(`/api/posts/${pid}`);
 				const data = await res.data;
+
 				if (data.error) {
 					showToast("Error", data.error, "error");
 					return;
@@ -93,32 +95,32 @@ const PostPage = () => {
 			</Flex>
 
 			<Text my={3}>{currentPost.text}</Text>
-{currentPost.img.length > 0 && (
-    <Swiper
-    spaceBetween={10}
-    slidesPerView={2}
-    navigation
-    pagination={{ clickable: true }}
-    style={{ width:"500px",height:"250px" }}
->
-    {currentPost.img.map((item, index) => {
-        return (
-            <SwiperSlide key={index}>       
-                <img
-                    src={item}
-                    alt=""
-                    style={{
-                        width: "250px",          
-                        height: "250px",          
-                        objectFit: "cover",       
-                        borderRadius: "10px",     
-                    }}
-                />
-            </SwiperSlide>
-        );
-    })}
-</Swiper>
-)}
+			{currentPost.img.length > 0 && (
+				<Swiper
+					spaceBetween={10}
+					slidesPerView={2}
+					navigation
+					pagination={{ clickable: true }}
+					style={{ width: "500px", height: "250px" }}
+				>
+					{currentPost.img.map((item, index) => {
+						return (
+							<SwiperSlide key={index}>
+								<img
+									src={item}
+									alt=""
+									style={{
+										width: "250px",
+										height: "250px",
+										objectFit: "cover",
+										borderRadius: "10px",
+									}}
+								/>
+							</SwiperSlide>
+						);
+					})}
+				</Swiper>
+			)}
 
 			<Flex gap={3} my={3}>
 				<Actions post={currentPost} />

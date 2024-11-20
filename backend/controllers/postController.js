@@ -38,6 +38,7 @@ const createPost = async (req, res) => {
 					unique_filename: true
 				});
 				imgUrls.push(uploadedResponse.secure_url); // Lưu lại URL của ảnh đã upload
+				console.log("saved img path :",uploadedResponse.secure_url)
 			}
 		}
 
@@ -123,44 +124,6 @@ const likeUnlikePost = async (req, res) => {
 		res.status(500).json({ error: err.message });
 	}
 };
-
-// const replyToPost = async (req, res) => {
-// 	try {
-// 		const { text } = req.body;
-// 		const { img } = req.body;
-// 		const { conversationId }= req.body;
-// 		const postId = req.params.id;
-// 		const userId = req.user._id;
-// 		const userProfilePic = req.user.profilePic;
-// 		const username = req.user.username;
-// console.log("reply to post")
-// 		if (!text) {
-// 			return res.status(400).json({ error: "Text field is required" });
-// 		}
-// 		if (img) {
-// 			const uploadedResponse = await cloudinary.uploader.upload(profilePic,{
-// 				folder: 'Threads',
-// 				use_filename: false,
-// 				unique_filename: true
-// 			});
-// 			uploadImg = uploadedResponse.secure_url;
-// 		}
-
-// 		const post = await Post.findById(postId);
-// 		if (!post) {
-// 			return res.status(404).json({ error: "Post not found" });
-// 		}
-
-// 		const reply = { userId, text, uploadImg, username };
-
-// 		post.replies.push(reply);
-// 		await post.save();
-
-// 		res.status(200).json(reply);
-// 	} catch (err) {
-// 		res.status(500).json({ error: err.message });
-// 	}
-// };
 
 const replyToPost = async (req, res) => {
 	try {

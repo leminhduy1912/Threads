@@ -1,3 +1,5 @@
+// import mongoose from "mongoose";
+
 // const postSchema = mongoose.Schema(
 // 	{
 // 		postedBy: {
@@ -9,11 +11,9 @@
 // 			type: String,
 // 			maxLength: 500,
 // 		},
-// 		img: {
-// 			type: [String],
-// 			default: [],
-// 		},
+// 		img: { type: [String], default: [] },
 // 		likes: {
+// 			// array of user ids
 // 			type: [mongoose.Schema.Types.ObjectId],
 // 			ref: "User",
 // 			default: [],
@@ -25,22 +25,10 @@
 // 					ref: "User",
 // 					required: true,
 // 				},
-// 				content: {
-// 					text: { type: String },
-// 					image: { type: String },
+// 				text: {
+// 					type: String,
+// 					required: true,
 // 				},
-// 				conversation: [
-// 					{
-// 						_id: {
-// 							type: mongoose.Schema.Types.ObjectId,
-// 							default: () => new mongoose.Types.ObjectId(),
-// 						},
-// 						userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-// 						userPic: { type: String },
-// 						text: { type: String },
-// 						image: { type: String },
-// 					},
-// 				],
 // 				userProfilePic: {
 // 					type: String,
 // 				},
@@ -58,6 +46,7 @@
 // const Post = mongoose.model("Post", postSchema);
 
 // export default Post;
+
 
 
 
@@ -132,4 +121,3 @@ const postSchema = new mongoose.Schema(
 const Post = mongoose.model("Post", postSchema);
 
 export default Post;
-
