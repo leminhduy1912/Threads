@@ -49,7 +49,7 @@ const SuggestedUser = ({ user }) => {
     const { handleFollowUnfollow, following, updating } = userFollowUnfollow(user);
 
     return (
-        <div className="flex items-center justify-between gap-2 bg-slate-800 p-3 rounded-xl">
+        <div className="flex items-center justify-between gap-2 bg-slate-600 p-3 rounded-2xl">
             {/* Left side */}
             <Link to={`${user.username}`} className="flex items-center gap-2">
                 {/* <img

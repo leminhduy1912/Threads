@@ -68,7 +68,15 @@ export const usePreviewImg = () => {
 			setImgUrl(null);
 		}
 	};
-	return { handleImageChange, imgUrl, setImgUrl };
+	const removeImage = () => {
+		if (imgUrl) {
+		  setImgUrl(null); // Xóa URL hiện tại bằng cách đặt lại thành null
+		  showToast("Image Removed");
+		} else {
+		  showToast("No Image", "There is no image to remove", "warning");
+		}
+	  };
+	return { handleImageChange, imgUrl, setImgUrl,removeImage };
 };
 export default usePreviewImg;
 

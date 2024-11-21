@@ -35,9 +35,10 @@ createRoot(document.getElementById('root')).render(
 		<BrowserRouter>
 			<ChakraProvider theme={theme}>
 				<ColorModeScript initialColorMode={theme.config.initialColorMode} />
-				<SocketContextProvider>
+				{/* <SocketContextProvider>
 					<App />
-				</SocketContextProvider>
+				</SocketContextProvider> */}
+				<App />
 			</ChakraProvider>
 		</BrowserRouter>
 

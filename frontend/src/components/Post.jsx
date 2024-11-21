@@ -3,10 +3,11 @@ import { Image } from "@chakra-ui/image";
 import { Box, Flex, Text } from "@chakra-ui/layout";
 import { Link, useNavigate } from "react-router-dom";
 // import Actions from "./Actions";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useShowToast from "../hooks/useShowToast";
 import { formatDistanceToNow } from "date-fns";
 import { DeleteIcon } from "@chakra-ui/icons";
+import { IoIosSend } from "react-icons/io";
 import { useRecoilState, useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
 import postsAtom from "../atoms/postsAtom";
@@ -15,19 +16,27 @@ import { SwiperSlide, Swiper } from "swiper/react";
 import 'swiper/css';
 import Actions from "./Actions";
 import Comments from "./Comments";
+import ImageSlide from "./ImageSlide";
+import { BsFillImageFill } from "react-icons/bs";
+import { CloseButton } from "@chakra-ui/react";
+import usePreviewImg from "../hooks/usePreviewImg";
+
+
 
 const Post = ({ post, postedBy }) => {
-
 	const [user, setUser] = useState(null);
 
 	const showToast = useShowToast();
 	const currentUser = useRecoilValue(userAtom);
 	const [posts, setPosts] = useRecoilState(postsAtom);
+	const [commentContent, setCommentContent] = useState("");
+
 	const [imgs, setImgs] = useState(post.img);
 	const navigate = useNavigate();
 	const [isOpenComment, setIsOpenComment] = useState(false);
 	const [isLiking, setIsLiking] = useState(false);
 	const [liked, setLiked] = useState(post.likes.includes(user?._id));
+	const { imgUrl, setImgUrl, removeImage } = usePreviewImg();
 
 	useEffect(() => {
 		const getUser = async () => {
@@ -47,6 +56,7 @@ const Post = ({ post, postedBy }) => {
 
 		getUser();
 	}, [postedBy, showToast]);
+
 
 	const handleDeletePost = async (e) => {
 		console.log("delete post")
@@ -111,159 +121,43 @@ const Post = ({ post, postedBy }) => {
 			setIsLiking(false);
 		}
 	};
-	if (!user) { return null };
-	// return (
+	const [imagePreview, setImagePreview] = useState(null);
+	const imageRef = useRef(null);
 
-	// 	<Flex gap={3} mb={4} py={5} width={500} height={500}  >
-
-	// 		<Flex flexDirection={"column"} alignItems={"center"} >
-	// 			<Avatar
-	// 				size='md'
-	// 				name={user.name}
-	// 				src={user?.profilePic}
-	// 				onClick={(e) => {
-	// 					e.preventDefault();
-	// 					navigate(`/${user.username}`);
-	// 				}}
-	// 			/>
-
-	// 			<Box position={"relative"} w={"full"}>
-
-	// 				{post.replies[0] && (
-	// 					<Avatar
-	// 						size='xs'
-	// 						name='John doe'
-	// 						src={post.replies[0].userProfilePic}
-	// 						position={"absolute"}
-	// 						top={"0px"}
-	// 						left='15px'
-	// 						padding={"2px"}
-	// 					/>
-	// 				)}
-
-	// 				{post.replies[1] && (
-	// 					<Avatar
-	// 						size='xs'
-	// 						name='John doe'
-	// 						src={post.replies[1].userProfilePic}
-	// 						position={"absolute"}
-	// 						bottom={"0px"}
-	// 						right='-5px'
-	// 						padding={"2px"}
-	// 					/>
-	// 				)}
-
-	// 				{post.replies[2] && (
-	// 					<Avatar
-	// 						size='xs'
-	// 						name='John doe'
-	// 						src={post.replies[2].userProfilePic}
-	// 						position={"absolute"}
-	// 						bottom={"0px"}
-	// 						left='4px'
-	// 						padding={"2px"}
-	// 					/>
-	// 				)}
-	// 			</Box>
-	// 		</Flex>
-	// 		<Flex flex={1} flexDirection={"column"} alignContent={"start"} gap={2}>
-	// 			<Flex justifyContent={"space-between"} w={"full"}>
-	// 				<Flex w={"full"} alignItems={"center"}>
-	// 					<Text
-	// 						fontSize={"sm"}
-	// 						fontWeight={"bold"}
-	// 						onClick={(e) => {
-	// 							e.preventDefault();
-	// 							navigate(`/${user.username}`);
-	// 						}}
-	// 					>
-	// 						{user?.username}
-	// 					</Text>
-	// 					{/* <Image src='/verified.png' w={4} h={4} ml={1} /> */}
-	// 				</Flex>
-	// 				<Flex gap={4} alignItems={"center"}>
-	// 					<Text fontSize={"xs"} width={36} textAlign={"right"} color={"gray.light"}>
-	// 						{formatDistanceToNow(new Date(post.createdAt))} ago
-	// 					</Text>
-
-	// 					{currentUser?._id === user._id && <DeleteIcon size={20} onClick={handleDeletePost} />}
-	// 				</Flex>
-	// 			</Flex>
-
-	// 			<Text fontSize={"sm"} textAlign="start">{post.text}</Text>
-	// 			<Flex align="center" justify="center">
-	// 				{imgs.length > 0 && (
-	// 					<Swiper
-	// 						spaceBetween={10}
-	// 						slidesPerView={1}
-	// 						navigation
-	// 						pagination={{
-	// 							clickable: true,
-	// 							type: 'fraction',  // Use fraction type for pagination
-	// 							renderFraction: function (currentClass, totalClass) {
-	// 								return `<span className="${currentClass}"></span> / <span className="${totalClass}"></span>`;
-	// 							}
-	// 						}}
-	// 						// modules={[Pagination]}  // Register Pagination module
-	// 						style={{ width: "500px", height: "250px" }}
-	// 					>
-	// 						{imgs.map((item, index) => (
-	// 							<SwiperSlide key={index}>
-	// 								<Box position="relative" width="250px" height="250px" onClick={(e) => e.preventDefault()}>  {/* Prevent default navigation */}
-
-	// 									<span style={{
-	// 										position: "absolute",
-	// 										top: "10px",
-	// 										right: "10px",
-	// 										backgroundColor: "rgba(0, 0, 0, 0.5)",
-	// 										color: "white",
-	// 										padding: "5px 10px",
-	// 										borderRadius: "5px",
-	// 										fontSize: "12px"
-	// 									}}>
-	// 										{`${index + 1}/${imgs.length}`}
-	// 									</span>
-	// 									<img
-	// 										src={item}
-	// 										alt={`Slide ${index + 1}`}
-	// 										style={{
-	// 											width: "100%",
-	// 											height: "100%",
-	// 											objectFit: "cover",
-	// 											borderRadius: "10px",
-	// 										}}
-	// 									/>
-	// 								</Box>
-	// 							</SwiperSlide>
-	// 						))}
-	// 					</Swiper>
-	// 				)}
-	// 			</Flex>
-
-	// 			<Flex gap={3} my={1}>
-	// 				<Actions post={post} />
-	// 			</Flex>
-	// 		</Flex>
-	// 	</Flex>
-
-	const handleShowComment = () => {
-		setIsOpenComment(!isOpenComment)
-
-		console.log("open comment")
+	const handleImageChange = (e) => {
+		const file = e.target.files[0];
+		if (file && file.type.startsWith("image/")) {
+			const reader = new FileReader();
+			reader.onloadend = () => {
+				setImagePreview(reader.result); // Set the preview image
+			};
+			reader.readAsDataURL(file);
+		} else {
+			alert("Please select a valid image file");
+		}
+	};
+	const handleRemoveImage = () => {
+		setImagePreview(null)
 	}
+	if (!user) { return null };
+	const handleShowComment = () => {
+		setIsOpenComment((prevState) => !prevState); // Đảo ngược trạng thái
+
+	}
+
 	return (
 		// < !--Wrapper-- >
-		<div className="wrapper pt-10 px-8 flex flex-col items-center">
+		<div className="wrapper pt-10 px-8 flex flex-col items-center w-[1400px] ">
 			{/* <!-- Card--> */}
-			<article className="mb-4 break-inside p-6 rounded-xl bg-white dark:bg-slate-800 flex flex-col bg-clip-border sm:w-3/6 w-full">
+			<article className="mb-4 break-inside p-6 rounded-xl bg-white dark:bg-slate-800 flex flex-col justify-between bg-clip-border sm:w-3/6 w-full ">
 				<div className="flex pb-6 items-center justify-between">
 					<div className="flex">
 						<a className="inline-block mr-4" href="#">
 							<img className="rounded-full max-w-none w-12 h-12" src="https://randomuser.me/api/portraits/men/35.jpg" />
 						</a>
-						<div className="flex flex-col justify-start">
+						<div className="flex flex-col justify-start items-start">
 							<div>
-								<div className="inline-block text-lg font-bold dark:text-white"
+								<div className="inline-block  text-lg font-bold dark:text-white cursor-pointer"
 									onClick={(e) => {
 										e.preventDefault();
 										navigate(`/${user.username}`);
@@ -271,26 +165,29 @@ const Post = ({ post, postedBy }) => {
 								>{user?.username}</div>
 							</div>
 							<div className="text-slate-500 dark:text-slate-400">
-								July 17, 2018
+								{formatDistanceToNow(new Date(post.createdAt))} ago
 							</div>
 						</div>
 					</div>
 				</div>
 
-				<h2 className="text-3xl text-start font-extrabold dark:text-white" >
-					Web Design templates Selection
+				<h2 className="text-3xl text-start font-normal dark:text-white" >
+					{post.text}
 				</h2>
-
-				<div className="py-4">
-					<div className="flex justify-between gap-1 mb-1">
-						<a className="flex" href="#">
-							<img className="max-w-full rounded-tl-lg"
-								src="https://images.pexels.com/photos/92866/pexels-photo-92866.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260" />
-						</a>
-
-					</div>
+				{/* image slider */}
+				<div className="h-full w-full flex justify-center items-center ">
+					{
+						imgs && imgs.length > 0 && (
+							<div className="py-4 w-full">
+								<div className=""><ImageSlide imgs={imgs} /></div>
+							</div>
+						)
+					}
 
 				</div>
+
+
+
 
 				<div className="py-4 flex justify-items-start gap-5">
 					<div className="inline-flex items-center" href="#">
@@ -314,7 +211,7 @@ const Post = ({ post, postedBy }) => {
 							</svg>
 						</span>
 
-						<span className="text-lg font-bold">7</span>
+						<span className="text-lg font-bold">{post.likes.length}</span>
 					</div>
 					<div className="inline-flex items-center" href="#">
 						<span className="mr-2">
@@ -340,42 +237,73 @@ const Post = ({ post, postedBy }) => {
 							</svg>
 						</span>
 
-						<span className="text-lg font-bold">34</span>
+						<span className="text-lg font-bold">{post.replies.length}</span>
 					</div>
 				</div>
-				<div className="relative">
+				<div
+					className="relative w-full h-auto bg-slate-100 dark:bg-slate-600 rounded-lg p-3 placeholder:text-slate-600 dark:placeholder:text-slate-300 font-medium"
+					style={{ minHeight: "100px" }}
+				>
+
 					<input
 						className="pt-2 pb-2 pl-3 w-full h-11 bg-slate-100 dark:bg-slate-600 rounded-lg placeholder:text-slate-600 dark:placeholder:text-slate-300 font-medium pr-20"
 						type="text" placeholder="Write a comment" />
-					<span className="flex absolute right-3 top-2/4 -mt-3 items-center">
 
-						<svg
-							aria-label='Comment'
-							color=''
-							fill=''
-							height='20'
-							role='img'
-							viewBox='0 0 24 24'
-							width='20'
-							onClick={handleShowComment}
+					{/* Display the image preview if available */}
+					{imagePreview && (
+						<div className="relative">
+							<img
+								src={imagePreview}
+								alt="Preview"
+								className="rounded-lg object-cover mt-2"
+								style={{ maxWidth: "100%", maxHeight: "150px" }}
+							/>
+							<CloseButton
+								onClick={() => handleRemoveImage()}  // Xóa ảnh khi bấm nút
+								bg={"gray.800"}
+								position={"absolute"}
+								top={2}
+								left={2}
+							/>
+						</div>
+					)}
+
+					{/* Hidden file input */}
+					<input
+						type="file"
+						ref={imageRef}
+						accept="image/*"
+						style={{ display: "none" }}
+						onChange={handleImageChange}
+					/>
+
+					{/* Image upload button */}
+					<div className="absolute  top-6 right-6 flex justify-start gap-2 items-center"
+					>
+						<span
+							className=" cursor-pointer text-gray-500 dark:text-gray-300"
+							onClick={() => imageRef.current.click()} // Trigger file input
 						>
-							<title>Comment</title>
-							<path
-								d='M20.656 17.008a9.993 9.993 0 1 0-3.59 3.615L22 22Z'
-								fill='none'
-								stroke='currentColor'
-								strokeLinejoin='round'
-								strokeWidth='2'
-							></path>
-						</svg>
-					</span>
+							<BsFillImageFill size={20} />
+						</span>
+						<span
+							className="cursor-pointer text-gray-500 dark:text-gray-300"
+							onClick={() => imageRef.current.click()} // Trigger file input
+						>
+							<IoIosSend size={20} />
+						</span>
+					</div>
+
 				</div>
-				{/* <!-- Comments content --> */}
-				{
-					isOpenComment && (
-						<Comments />
-					)
-				}
+
+				<div className="">{
+					isOpenComment && post.replies.length > 0 && post.replies.map((item, index) => {
+						return (
+							<Comments reply={item} />
+						)
+					})
+				}</div>
+
 
 
 			</article>

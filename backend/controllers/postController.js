@@ -132,7 +132,7 @@ const replyToPost = async (req, res) => {
 		const userId = req.user._id;
 		const userProfilePic = req.user.profilePic;
 		const username = req.user.username;
-
+console.log("img nhan duoc",img)
 		// Tìm bài viết theo postId
 		const post = await Post.findById(postId);
 		if (!post) {
@@ -141,11 +141,19 @@ const replyToPost = async (req, res) => {
 
 		// Nếu không có replyId, thêm phản hồi mới vào mảng replies
 		if (!replyId) {
+			console.log("khong co reply id")
+			const uploadedResponse = await cloudinary.uploader.upload(img, {
+				folder: 'Threads',
+				use_filename: false,
+				unique_filename: true
+			});
+			// imgUrls.push(uploadedResponse.secure_url); // Lưu lại URL của ảnh đã upload
+			console.log("saved img path :",uploadedResponse.secure_url)
 			const newReply = {
 				userId,
 				content: {
 					text,
-					image: img,
+					image: uploadedResponse.secure_url,
 				},
 				userProfilePic,
 				username,
@@ -154,18 +162,26 @@ const replyToPost = async (req, res) => {
 
 			post.replies.push(newReply);
 		} else {
+			console.log("co reply id")
 			// Nếu có replyId, tìm reply cụ thể để thêm vào conversation
 			const reply = post.replies.find((r) => r._id.toString() == replyId);
             console.log("reply find",post.replies);
 			if (!reply) {
 				return res.status(404).json({ message: "Reply not found" });
 			}
+			const uploadedResponse = await cloudinary.uploader.upload(img, {
+				folder: 'Threads',
+				use_filename: false,
+				unique_filename: true
+			});
 			const newConversation = {
 				_id: new mongoose.Types.ObjectId(), // Tạo _id cho conversation mới
 				userId,
 				userPic: userProfilePic,
 				text,
-				image: img,
+				username,
+				image: uploadedResponse.secure_url,
+				
 			};
 
 			// Thêm vào mảng conversation của reply đã tìm thấy

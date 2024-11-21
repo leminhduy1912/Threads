@@ -13,14 +13,12 @@ const Sidebar = () => {
                 </div>
                 <div className="w-1/2">
                     <span className="font-semibold text-white">Ava Harper</span>
-                    {/* <button className="bg-green-500 text-white px-4 py-2 rounded-md border border-blue-500 hover:bg-white hover:text-green-500">
-                        Premium
-                    </button> */}
+
                 </div>
             </div>
             <div className="mt-10 mb-4">
                 <ul className="ml-4">
-                    <li className="mb-2 px-4 py-4 text-gray-100 flex flex-row  border-gray-300 hover:text-black   hover:bg-gray-300  hover:font-bold rounded rounded-lg">
+                    <li className="mb-2 px-4 py-4 text-gray-100 flex flex-row  border-gray-300 hover:text-black   hover:bg-gray-300  hover:font-bold  rounded-lg">
                         <span>
                             <svg className="fill-current h-5 w-5 " viewBox="0 0 24 24">
                                 <path
@@ -34,7 +32,7 @@ const Sidebar = () => {
                             <span className="ml-2">Dashboard</span>
                         </a>
                     </li>
-                    <li className="mb-2 px-4 py-4 text-gray-100 flex flex-row  border-gray-300 hover:text-black   hover:bg-gray-300  hover:font-bold rounded rounded-lg">
+                    <li className="mb-2 px-4 py-4 text-gray-100 flex flex-row  border-gray-300 hover:text-black   hover:bg-gray-300  hover:font-bold  rounded-lg">
                         <span>
                             <svg
                                 className="fill-current h-5 w-5 "
@@ -59,7 +57,7 @@ const Sidebar = () => {
                             <span className="ml-2">Customers</span>
                         </a>
                     </li>
-                    <li className="mb-2 px-4 py-4 text-gray-100 flex flex-row  border-gray-300 hover:text-black   hover:bg-gray-300  hover:font-bold rounded rounded-lg">
+                    <li className="mb-2 px-4 py-4 text-gray-100 flex flex-row  border-gray-300 hover:text-black   hover:bg-gray-300  hover:font-bold  rounded-lg">
                         <span>
                             <svg className="fill-current h-5 w-5 " viewBox="0 0 24 24">
                                 <path
@@ -74,7 +72,7 @@ const Sidebar = () => {
                             <span className="ml-2">Milestones</span>
                         </a>
                     </li>
-                    <li className="mb-2 px-4 py-4 text-gray-100 flex flex-row  border-gray-300 hover:text-black   hover:bg-gray-300  hover:font-bold rounded rounded-lg">
+                    <li className="mb-2 px-4 py-4 text-gray-100 flex flex-row  border-gray-300 hover:text-black   hover:bg-gray-300  hover:font-bold  rounded-lg">
                         <span>
                             <svg className="fill-current h-5 w-5" viewBox="0 0 24 24">
                                 <path
@@ -88,7 +86,7 @@ const Sidebar = () => {
                             <span className="ml-2">Team</span>
                         </a>
                     </li>
-                    <li className="mb-2 px-4 py-4 text-gray-100 flex flex-row  border-gray-300 hover:text-black   hover:bg-gray-300  hover:font-bold rounded rounded-lg">
+                    <li className="mb-2 px-4 py-4 text-gray-100 flex flex-row  border-gray-300 hover:text-black   hover:bg-gray-300  hover:font-bold  rounded-lg">
                         <span>
                             <svg className="fill-current h-5 w-5 " viewBox="0 0 24 24">
                                 <path
@@ -102,7 +100,7 @@ const Sidebar = () => {
                             <span className="ml-2">Tasks</span>
                         </a>
                     </li>
-                    <li className="mb-2 px-4 py-4 text-gray-100 flex flex-row  border-gray-300 hover:text-black   hover:bg-gray-300  hover:font-bold rounded rounded-lg">
+                    <li className="mb-2 px-4 py-4 text-gray-100 flex flex-row  border-gray-300 hover:text-black   hover:bg-gray-300  hover:font-bold  rounded-lg">
                         <span>
                             <svg
                                 className="fill-current h-5 w-5 "

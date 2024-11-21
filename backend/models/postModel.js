@@ -60,6 +60,7 @@ const conversationSchema = new mongoose.Schema(
 		userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 		userPic: { type: String },
 		text: { type: String },
+		username:{type:String},
 		image: { type: String },
 	},
 	{

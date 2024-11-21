@@ -1,12 +1,12 @@
 
 import './App.css'
 import { useRecoilValue } from 'recoil'
-import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import userAtom from './atoms/userAtom'
-import { Box, Container } from '@chakra-ui/react'
+import { Box } from '@chakra-ui/react'
 import AuthPage from './pages/AuthPage'
 import HomePage from './pages/HomePage'
-import Header from './components/Header'
+// import Header from './components/Header'
 import UpdateProfilePage from './pages/UpdateProfilePage'
 import UserPage from './pages/UserPage'
 import CreatePost from './components/CreatePost'
@@ -17,7 +17,7 @@ import ChatPage from './pages/ChatPage'
 function App() {
   const user = useRecoilValue(userAtom);
 
-  const { pathname } = useLocation();
+  // const { pathname } = useLocation();
   return (
     <Box position={"relative"} w='full'>
       {/* maxW={pathname === "/" ? { base: "620px", md: "900px" } : "620px"} */}
