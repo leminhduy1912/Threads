@@ -12,7 +12,6 @@ import {
     ModalOverlay,
     Text,
     Textarea,
-    useColorModeValue,
     useDisclosure,
 
 } from "@chakra-ui/react";
@@ -20,11 +19,13 @@ import { BsFillImageFill } from "react-icons/bs";
 import { formatDistanceToNow } from "date-fns";
 import { useRef, useState } from "react";
 import useShowToast from "../hooks/useShowToast";
-import usePreviewImg, { usePreviewImgs } from "../hooks/usePreviewImg";
-import { useRecoilState } from "recoil";
+import usePreviewImg from "../hooks/usePreviewImg";
+import { useRecoilValue } from "recoil";
+import userAtom from "../atoms/userAtom";
+import { clientRequest } from "../api/clientRequest";
 const MAX_CHAR = 500;
 const Comments = (props) => {
-    const { reply } = props;
+    const { reply, postId } = props;
 
     const [conversation, setConveration] = useState(reply.conversation || []);
     const imageRef = useRef(null);
@@ -40,28 +41,40 @@ const Comments = (props) => {
         onOpen()
     }
     const finalRef = useRef(null)
+    const user = useRecoilValue(userAtom);
 
-    // const [postText, setPostText] = useState("");
-    // const { handleImageChange, imgUrls, setImgUrls, removeImage } = usePreviewImgs();  // Lấy mảng imgUrls
-    // const imageRef = useRef(null);
-    // const [remainingChar, setRemainingChar] = useState(MAX_CHAR);
-    // // const user = useRecoilValue(userAtom);
-    // const showToast = useShowToast();
-    // const [loading, setLoading] = useState(false);
-    // // const [posts, setPosts] = useRecoilState(postsAtom);
-    // const { username } = useParams();
-    // const handleTextChange = (e) => {
-    //     const inputText = e.target.value;
+    const handleReply = async (img, textComment) => {
+        if (!user) {
+            return showToast("Error", "You must be logged in to reply to a post", "error");
+        }
 
-    //     if (inputText.length > MAX_CHAR) {
-    //         const truncatedText = inputText.slice(0, MAX_CHAR);
-    //         setPostText(truncatedText);
-    //         setRemainingChar(0);
-    //     } else {
-    //         setPostText(inputText);
-    //         setRemainingChar(MAX_CHAR - inputText.length);
-    //     }
-    // };
+        if (!textComment.trim()) {
+            return showToast("Error", "Reply cannot be empty", "error");
+        }
+
+        try {
+            const payload = { text: textComment };
+            if (img) {
+                payload.img = img;
+            }
+
+            const res = await clientRequest.put(`/api/posts/reply/${postId}`, payload);
+
+            if (!res.data) {
+                return showToast("Error", "An error occurred while posting the reply", "error");
+            }
+
+            if (res.data.error) {
+                return showToast("Error", res.data.error, "error");
+            }
+
+            showToast("Success", "Reply posted successfully", "success");
+            onClose();
+        } catch (error) {
+            showToast("Error", error.message || "An error occurred", "error");
+        }
+    };
+
     const handleTextChange = (e) => {
         const inputText = e.target.value;
 
@@ -93,7 +106,14 @@ const Comments = (props) => {
                                 </p>
                             </div>
                         </footer>
-                        <p className="text-start text-gray-500 dark:text-gray-400">{reply.content.text}</p>
+                        {reply?.content?.text && (
+                            <p className="text-start text-gray-500 dark:text-gray-400">
+                                {reply.content.text}
+                            </p>
+                        )}
+                        {reply?.content?.image && (
+                            <img className="max-h-[300px]" src={reply?.content?.image} alt="" />
+                        )}
                         <div className="flex items-center mt-4 space-x-4">
                             <button onClick={handleReplyComment}
                                 className="flex items-center text-sm text-gray-500 hover:underline dark:text-gray-400 font-medium">
@@ -119,7 +139,9 @@ const Comments = (props) => {
                                     </p>
                                 </div>
                             </footer>
-                            <p className="text-start text-gray-500 dark:text-gray-400">{item.text}</p>
+                            {item.text && (
+                                <p className="text-start text-gray-500 dark:text-gray-400">{item.text}</p>
+                            )}
                             <img src="https://th.bing.com/th/id/OIP.Xt7qozEdnJg2QHtAKbA-VwHaFj?w=238&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" alt="" />
                             <div className="flex items-center mt-4 space-x-4">
                                 <button type="button"

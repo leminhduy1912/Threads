@@ -33,7 +33,7 @@ const SuggestedUsers = () => {
 
 	return (
 		<>
-			<div className="mr-6 bg-slate-800 p-6 fixed top-16 right-0 rounded-xl ">
+			<div className=" ">
 				<Text mb={4} fontWeight={"bold"}>
 					Suggested Users
 				</Text>

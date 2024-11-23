@@ -1,6 +1,4 @@
-import { Avatar } from "@chakra-ui/avatar";
-import { Image } from "@chakra-ui/image";
-import { Box, Flex, Text } from "@chakra-ui/layout";
+
 import { Link, useNavigate } from "react-router-dom";
 // import Actions from "./Actions";
 import { useEffect, useRef, useState } from "react";
@@ -12,9 +10,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
 import postsAtom from "../atoms/postsAtom";
 import { clientRequest } from "../api/clientRequest";
-import { SwiperSlide, Swiper } from "swiper/react";
 import 'swiper/css';
-import Actions from "./Actions";
 import Comments from "./Comments";
 import ImageSlide from "./ImageSlide";
 import { BsFillImageFill } from "react-icons/bs";
@@ -36,7 +32,7 @@ const Post = ({ post, postedBy }) => {
 	const [isOpenComment, setIsOpenComment] = useState(false);
 	const [isLiking, setIsLiking] = useState(false);
 	const [liked, setLiked] = useState(post.likes.includes(user?._id));
-	const { imgUrl, setImgUrl, removeImage } = usePreviewImg();
+	const { handleImageChange, imgUrl, setImgUrl, removeImage } = usePreviewImg();
 
 	useEffect(() => {
 		const getUser = async () => {
@@ -121,30 +117,45 @@ const Post = ({ post, postedBy }) => {
 			setIsLiking(false);
 		}
 	};
-	const [imagePreview, setImagePreview] = useState(null);
 	const imageRef = useRef(null);
+	const [textComment, setTextComment] = useState("")
 
-	const handleImageChange = (e) => {
-		const file = e.target.files[0];
-		if (file && file.type.startsWith("image/")) {
-			const reader = new FileReader();
-			reader.onloadend = () => {
-				setImagePreview(reader.result); // Set the preview image
-			};
-			reader.readAsDataURL(file);
-		} else {
-			alert("Please select a valid image file");
-		}
-	};
 	const handleRemoveImage = () => {
-		setImagePreview(null)
+		setImgUrl(null)
 	}
 	if (!user) { return null };
 	const handleShowComment = () => {
 		setIsOpenComment((prevState) => !prevState); // Đảo ngược trạng thái
 
 	}
+	const hanldeComment = async (img, textComment) => {
+		console.log("comment", img, textComment)
+		if (!textComment) {
+			showToast("Error", "Reply cannot be empty", "error");
+		}
+		console.log("img comment", img)
+		try {
+			const payload = { text: textComment };
+			if (img) {
+				payload.image = img;
+			}
 
+			const res = await clientRequest.put(`/api/posts/reply/${post._id}`, payload);
+
+			if (!res.data) {
+				return showToast("Error", "An error occurred while posting the reply", "error");
+			}
+
+			if (res.data.error) {
+				return showToast("Error", res.data.error, "error");
+			}
+			setTextComment("")
+			showToast("Success", "Reply posted successfully", "success");
+
+		} catch (error) {
+			showToast("Error", error.message || "An error occurred", "error");
+		}
+	}
 	return (
 		// < !--Wrapper-- >
 		<div className="wrapper pt-10 px-8 flex flex-col items-center w-[1400px] ">
@@ -191,7 +202,7 @@ const Post = ({ post, postedBy }) => {
 
 				<div className="py-4 flex justify-items-start gap-5">
 					<div className="inline-flex items-center" href="#">
-						<span className="mr-2">
+						<span className="mr-2 cursor-pointer">
 
 							<svg
 								aria-label='Like'
@@ -214,7 +225,7 @@ const Post = ({ post, postedBy }) => {
 						<span className="text-lg font-bold">{post.likes.length}</span>
 					</div>
 					<div className="inline-flex items-center" href="#">
-						<span className="mr-2">
+						<span className="mr-2 cursor-pointer">
 
 							<svg
 								aria-label='Comment'
@@ -247,13 +258,13 @@ const Post = ({ post, postedBy }) => {
 
 					<input
 						className="pt-2 pb-2 pl-3 w-full h-11 bg-slate-100 dark:bg-slate-600 rounded-lg placeholder:text-slate-600 dark:placeholder:text-slate-300 font-medium pr-20"
-						type="text" placeholder="Write a comment" />
+						type="text" placeholder="Write a comment" value={textComment} onChange={(e) => { setTextComment(e.target.value) }} />
 
 					{/* Display the image preview if available */}
-					{imagePreview && (
+					{imgUrl && (
 						<div className="relative">
 							<img
-								src={imagePreview}
+								src={imgUrl}
 								alt="Preview"
 								className="rounded-lg object-cover mt-2"
 								style={{ maxWidth: "100%", maxHeight: "150px" }}
@@ -271,10 +282,10 @@ const Post = ({ post, postedBy }) => {
 					{/* Hidden file input */}
 					<input
 						type="file"
-						ref={imageRef}
 						accept="image/*"
 						style={{ display: "none" }}
 						onChange={handleImageChange}
+						ref={imageRef}
 					/>
 
 					{/* Image upload button */}
@@ -288,7 +299,7 @@ const Post = ({ post, postedBy }) => {
 						</span>
 						<span
 							className="cursor-pointer text-gray-500 dark:text-gray-300"
-							onClick={() => imageRef.current.click()} // Trigger file input
+							onClick={() => hanldeComment(imgUrl, textComment)}
 						>
 							<IoIosSend size={20} />
 						</span>

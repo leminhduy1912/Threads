@@ -7,6 +7,8 @@ import {
 	replyToPost,
 	getFeedPosts,
 	getUserPosts,
+	deleteReplyOrConversation,
+	getCommentOfPost
 } from "../controllers/postController.js";
 import protectRoute from "../middleware/protectRoute.js";
 import { getUserProfile } from "../controllers/userController.js";
@@ -21,5 +23,7 @@ router.post("/create",protectRoute, createPost);
 router.delete("/:id", protectRoute, deletePost);
 router.put("/like/:id", protectRoute, likeUnlikePost);
 router.put("/reply/:id", protectRoute, replyToPost);
+router.delete("/reply/:id",protectRoute,deleteReplyOrConversation)
+router.get("/reply/:id/comment",protectRoute,getCommentOfPost)
 
 export default router;

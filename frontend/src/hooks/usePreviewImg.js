@@ -65,9 +65,22 @@ export const usePreviewImg = () => {
 			reader.readAsDataURL(file);
 		} else {
 			showToast("Invalid file type", " Please select an image file", "error");
-			setImgUrl(null);
+			//setImgUrl(null);
 		}
 	};
+		// const handleImageChange = (e) => {
+	// 	const file = e.target.files[0];
+	// 	if (file && file.type.startsWith("image/")) {
+	// 		const reader = new FileReader();
+	// 		reader.onloadend = () => {
+	// 			setImagePreview(reader.result); // Set the preview image
+	// 		};
+	// 		reader.readAsDataURL(file);
+	// 		setImageComment(file.name)
+	// 	} else {
+	// 		alert("Please select a valid image file");
+	// 	}
+	// };
 	const removeImage = () => {
 		if (imgUrl) {
 		  setImgUrl(null); // Xóa URL hiện tại bằng cách đặt lại thành null

@@ -3,7 +3,7 @@
 const Sidebar = () => {
     return (
 
-        <nav className="fixed top-0 left-0 flex flex-col bg-[#1e293b] w-64 h-screen px-4 tex-gray-900 rounded-xl ">
+        <nav className="sticky top-0  flex flex-col bg-[#1e293b]  h-screen px-4 tex-gray-900 rounded-xl ">
             <div className="flex flex-wrap mt-8 items-center">
                 <div className="w-1/2">
                     <img
