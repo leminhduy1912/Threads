@@ -26,7 +26,6 @@ const Post = ({ post, postedBy }) => {
 	const currentUser = useRecoilValue(userAtom);
 	const [posts, setPosts] = useRecoilState(postsAtom);
 	const [commentContent, setCommentContent] = useState("");
-
 	const [imgs, setImgs] = useState(post.img);
 	const navigate = useNavigate();
 	const [isOpenComment, setIsOpenComment] = useState(false);
@@ -307,17 +306,24 @@ const Post = ({ post, postedBy }) => {
 
 				</div>
 
-				<div className="">{
-					isOpenComment && post.replies.length > 0 && post.replies.map((item, index) => {
-						return (
-							<Comments reply={item} />
-						)
-					})
-				}</div>
+				<div className="">
+					{
+						isOpenComment && post.replies.length > 0 && post.replies.map((item, index) => {
+							return (
+								<>
+									<Comments reply={item} />
+								</>
+
+							)
+						})
+
+					}
+					<button>Hi</button>
+				</div>
 
 
 
-			</article>
+			</article >
 		</div >
 		// <!--End Wrapper-- >
 

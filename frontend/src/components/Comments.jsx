@@ -160,6 +160,7 @@ const Comments = (props) => {
 
 
             </section>
+
             <Modal finalFocusRef={finalRef} isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />
                 <ModalContent>

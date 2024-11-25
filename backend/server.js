@@ -54,7 +54,7 @@ dotenv.config();
 connectDB();
 
 const corsOptions = {
-  origin: 'http://localhost:5173', // Remove the trailing slash to match the exact origin
+  origin: 'http://localhost:3000', // Remove the trailing slash to match the exact origin
   credentials: true,  // Allow credentials like cookies
   methods: ['GET', 'POST', 'PUT', 'DELETE'],  // Allow all the necessary HTTP methods
   allowedHeaders: ['Content-Type', 'Authorization'], // Allow specific headers

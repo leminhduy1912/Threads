@@ -5,53 +5,62 @@ import { getPublicIdFromUrl } from "../utils/getPublicIdOfImage.js";
 import mongoose from "mongoose";
 const createPost = async (req, res) => {
 	try {
-		const { postedBy, text,img } = req.body;
-		// let { img } = req.body;
+		const { postedBy, text, img } = req.body;
 
+		// Validate required fields
 		if (!postedBy || !text) {
-			return res.status(400).json({ error: "Postedby and text fields are required" });
+			return res.status(400).json({ error: "PostedBy and text fields are required." });
 		}
 
+		// Check if the user exists
 		const user = await User.findById(postedBy);
 		if (!user) {
-			return res.status(404).json({ error: "User not found" });
+			return res.status(404).json({ error: "User not found." });
 		}
 
-		// Kiểm tra nếu user không phải là người tạo
+		// Verify if the logged-in user is authorized to create the post
 		if (user._id.toString() !== req.user._id.toString()) {
-			return res.status(401).json({ error: "Unauthorized to create post" });
+			return res.status(401).json({ error: "Unauthorized to create post." });
 		}
 
+		// Validate text length
 		const maxLength = 500;
 		if (text.length > maxLength) {
-			return res.status(400).json({ error: `Text must be less than ${maxLength} characters` });
+			return res.status(400).json({ error: `Text must be less than ${maxLength} characters.` });
 		}
 
-		// Xử lý mảng img
-		let imgUrls = [];
-		if (img && Array.isArray(img) && img.length > 0) {
-			// Duyệt qua từng ảnh trong mảng và upload lên Cloudinary
-			for (let i = 0; i < img.length; i++) {
-				const uploadedResponse = await cloudinary.uploader.upload(img[i], {
-					folder: 'Threads',
+		// Process the image (if provided)
+		let uploadedImageUrl = null;
+		if (img) {
+			try {
+				const uploadedResponse = await cloudinary.uploader.upload(img, {
+					folder: "Threads",
 					use_filename: false,
-					unique_filename: true
+					unique_filename: true,
 				});
-				imgUrls.push(uploadedResponse.secure_url); // Lưu lại URL của ảnh đã upload
-				
+				uploadedImageUrl = uploadedResponse.secure_url;
+			} catch (uploadError) {
+				return res.status(500).json({ error: "Image upload failed." });
 			}
 		}
 
-		// Tạo mới post với text và mảng URL hình ảnh
-		const newPost = new Post({ postedBy, text, img: imgUrls });
+		// Create the new post
+		const newPost = new Post({
+			postedBy,
+			text,
+			img: uploadedImageUrl, // Use the uploaded image URL or null
+		});
 		await newPost.save();
 
-		res.status(201).json(newPost);
+		// Respond with the newly created post
+		return res.status(201).json(newPost);
 	} catch (err) {
-		res.status(500).json({ error: err.message });
-		console.log(err);
+		// Handle unexpected server errors
+		console.error(err);
+		return res.status(500).json({ error: "An error occurred while creating the post." });
 	}
 };
+
 const getPost = async (req, res) => {
 	try {
 		const post = await Post.findById(req.params.id);
