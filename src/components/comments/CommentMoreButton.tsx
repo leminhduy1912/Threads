@@ -12,8 +12,8 @@ import DeleteCommentDialog from "./DeleteCommentDialog";
 
 interface CommentMoreButtonProps {
   comment: CommentData;
-  username: String,
-  createdAt: String.
+  username: string,
+  createdAt: string,
   className?: string;
 }
 

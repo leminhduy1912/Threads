@@ -17,3 +17,15 @@ export interface UserData {
     bio: string;
     profilePic: string;
 }
+export interface CommentData {
+    _id: string,
+    username: string,
+    content: string,
+    createdAt: string,
+    img: string,
+    conversation: [],
+    user: UserData,
+    name: string,
+    userProfilePic: string,
+    userId: string
+}

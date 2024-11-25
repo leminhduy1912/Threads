@@ -1,11 +1,11 @@
-import kyInstance from "@/lib/ky";
+
 import { CommentsPage, PostData } from "@/lib/types";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
 import { Button } from "../ui/button";
 import Comment from "./Comment";
 import CommentInput from "./CommentInput";
 import clientRequest from "@/app/api/clientRequest";
+import Loading from "@/app/loading";
 
 interface CommentsProps {
   post: PostData;
@@ -13,43 +13,63 @@ interface CommentsProps {
 
 export default function Comments({ post }: CommentsProps) {
   const fetchComment = async ({ pageParam = 1 }) => {
-    const res = await clientRequest.get(`/api/posts/feed?page=${pageParam}&limit=10`);
-    return res.data; // Assuming the API response is the array of posts
+    const res = await clientRequest.get(`/api/posts/reply/${post._id}/comment?page=${pageParam}&limit=10`);
+    return res.data.replies; // Assuming the API response is the array of posts
   };
-  // const { data, fetchNextPage, hasNextPage, isFetching, status } =
-  //   useInfiniteQuery({
-  //     queryKey: ["comments", post.id],
-  //     queryFn: ({ pageParam }) =>
-  //       kyInstance
-  //         .get(
-  //           `/api/posts/${post.id}/comments`,
-  //           pageParam ? { searchParams: { cursor: pageParam } } : {},
-  //         )
-  //         .json<CommentsPage>(),
-  //     initialPageParam: null as string | null,
-  //     getNextPageParam: (firstPage) => firstPage.previousCursor,
-  //     select: (data) => ({
-  //       pages: [...data.pages].reverse(),
-  //       pageParams: [...data.pageParams].reverse(),
-  //     }),
-  //   });
+  // Infinite query setup
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    status,
+  } = useInfiniteQuery({
+    queryKey: ["comment-feed"],
+    queryFn: fetchComment,
+    getNextPageParam: (lastPage, allPages) => {
+      // Determine if there is a next page
+      const currentPage = allPages.length;
+      return lastPage?.length === 10 ? currentPage + 1 : undefined;
+    },
+  });
 
-  //const comments = data?.pages.flatMap((page) => page.comments) || [];
+  // Flatten the posts array from all pages
+  const comments = data?.pages.flat() || [];
+  console.log("comments", comments)
+  // Handle loading state
+  if (status === "pending") {
+    return <Loading />;
+  }
+
+  // Handle error state
+  if (status === "error") {
+    return <p className="text-center text-destructive">Failed to load comments.</p>;
+  }
+
+  // Handle case where there are no posts
+  if (status === "success" && comments.length === 0) {
+    return (
+      <p className="text-center text-muted-foreground">
+        No comment available.
+      </p>
+    );
+  }
+
 
   return (
     <div className="space-y-3">
       <CommentInput post={post} />
-      {/* {hasNextPage && (
+      {hasNextPage && (
         <Button
           variant="link"
           className="mx-auto block"
-          disabled={isFetching}
+          disabled={isFetchingNextPage}
           onClick={() => fetchNextPage()}
         >
           Load previous comments
         </Button>
       )}
-      {status === "pending" && <Loader2 className="mx-auto animate-spin" />}
+      {status === "pending" && <Loading />}
       {status === "success" && !comments.length && (
         <p className="text-center text-muted-foreground">No comments yet.</p>
       )}
@@ -60,9 +80,11 @@ export default function Comments({ post }: CommentsProps) {
       )}
       <div className="divide-y">
         {comments.map((comment) => (
-          <Comment key={comment.id} comment={comment} />
+
+
+          <Comment key={comment._id} comment={comment} />
         ))}
-      </div> */}
+      </div>
     </div>
   );
 }
