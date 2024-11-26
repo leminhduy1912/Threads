@@ -183,15 +183,16 @@ const deleteReplyOrConversation = async (req, res) => {
 	}
 };
 
+
 const replyToPost = async (req, res) => {
 	try {
-	
 	  const { id: postId } = req.params;
 	  const { _id: userId, profilePic: userProfilePic, username } = req.user;
 	  const { text, img, replyId } = req.body;
+  
 	  // Find the post by ID
 	  const post = await Post.findById(postId);
-	
+  
 	  if (!post) {
 		return res.status(404).json({ message: "Post not found" });
 	  }
@@ -209,7 +210,9 @@ const replyToPost = async (req, res) => {
 		});
 		payload.image = uploadedResponse.secure_url;
 	  }
-	  // Add a reply or a conversation to an existing reply
+  
+	  let newReplyOrConversation;
+  
 	  if (!replyId) {
 		// New reply
 		const newReply = {
@@ -219,11 +222,17 @@ const replyToPost = async (req, res) => {
 		  username,
 		  conversation: [],
 		};
-	console.log("reply",newReply.content)
+		console.log("reply", newReply.content);
+  
+		// Add the reply to the post
 		post.replies.push(newReply);
+  
+		// Store the newly created reply
+		newReplyOrConversation = post.replies[post.replies.length - 1];
 	  } else {
 		// Reply to an existing reply (conversation)
 		const reply = post.replies.find((r) => r._id.toString() === replyId);
+  
 		if (!reply) {
 		  return res.status(404).json({ message: "Reply not found" });
 		}
@@ -236,19 +245,27 @@ const replyToPost = async (req, res) => {
 		  username,
 		  image: payload.image,
 		};
-		console.log("conversation",newConversation.text,newConversation.image)
+		console.log("conversation", newConversation.text, newConversation.image);
+  
+		// Add the conversation to the reply
 		reply.conversation.push(newConversation);
+  
+		// Store the newly created conversation
+		newReplyOrConversation = reply.conversation[reply.conversation.length - 1];
 	  }
   
 	  // Save the updated post
 	  await post.save();
   
-	  res.status(200).json({ message: "Reply added successfully", post });
+	  // Return only the newly created reply or conversation
+	  res.status(200).json({  newReplyOrConversation });
 	} catch (error) {
 	  console.error("Error:", error);
 	  res.status(500).json({ message: "Server error" });
 	}
   };
+  
+  
   const getCommentOfPost = async (req, res) => {
 	try {
 		const { id: postId } = req.params;

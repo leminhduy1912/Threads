@@ -48,6 +48,7 @@ import express from 'express';
 import connectDB from './db/connectDB.js';
 import userRoutes from './routes/userRoutes.js';
 import postRoutes from './routes/postRoutes.js';
+import notificationRoutes from './routes/notificationRoutes.js';
 import cors from 'cors';
 import { v2 as cloudinary } from "cloudinary";
 dotenv.config();
@@ -68,6 +69,6 @@ app.use(cors(corsOptions)); // Use CORS with specified options
 // Route 
 app.use('/api/users', userRoutes);
 app.use('/api/posts',postRoutes)
-
+app.use('/api/notifications',notificationRoutes)
 // Start server on the correct port
 app.listen(5000, () => console.log('Server started on port 5000'));
