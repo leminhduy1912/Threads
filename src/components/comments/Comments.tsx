@@ -15,7 +15,9 @@ export default function Comments({ post }: CommentsProps) {
   const fetchComment = async ({ pageParam = 1 }) => {
     const res = await clientRequest.get(`/api/posts/reply/${post._id}/comment?page=${pageParam}&limit=10`);
     return res.data.replies; // Assuming the API response is the array of posts
+    console.log("comments", res.data.replies)
   };
+
   // Infinite query setup
   const {
     data,
@@ -24,7 +26,7 @@ export default function Comments({ post }: CommentsProps) {
     isFetchingNextPage,
     status,
   } = useInfiniteQuery({
-    queryKey: ["comment-feed"],
+    queryKey: ["comment"],
     queryFn: fetchComment,
     getNextPageParam: (lastPage, allPages) => {
       // Determine if there is a next page

@@ -16,7 +16,6 @@ export default function Comment({ comment }: CommentProps) {
     name: comment.username,
     profilePic: comment.userProfilePic,
   };
-  console.log("comment", comment)
 
   return (
     <div className="group/comment flex gap-3 py-3">
