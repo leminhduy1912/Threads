@@ -1,3 +1,6 @@
+
+import clientRequest from "@/app/api/clientRequest";
+import Loading from "@/app/loading";
 import avatarPlaceholder from "@/assets/avatar-placeholder.png";
 import CropImageDialog from "@/components/CropImageDialog";
 import LoadingButton from "@/components/LoadingButton";
@@ -19,6 +22,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
 import { UserData } from "@/lib/types";
 import {
     updateUserProfileSchema,
@@ -30,52 +34,95 @@ import Image, { StaticImageData } from "next/image";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import Resizer from "react-image-file-resizer";
-//import { useUpdateProfileMutation } from "./mutations";
+import { useRouter } from "next/compat/router";
 
 interface EditProfileDialogProps {
     user: UserData;
     open: boolean;
     onOpenChange: (open: boolean) => void;
+    onProfileUpdate: () => void;
 }
 
 export default function EditProfileDialog({
     user,
     open,
     onOpenChange,
+    onProfileUpdate
 }: EditProfileDialogProps) {
+    const { toast } = useToast();
+
     const form = useForm<UpdateUserProfileValues>({
         resolver: zodResolver(updateUserProfileSchema),
         defaultValues: {
-            displayName: user.username,
+            username: user.username,
             bio: user.bio || "",
+            profilePic: user.profilePic || "" // Thêm profilePic vào defaultValues
         },
     });
-
-    //const mutation = useUpdateProfileMutation();
-
+    const [isLoading, setIsLoading] = useState(false)
     const [croppedAvatar, setCroppedAvatar] = useState<Blob | null>(null);
+    function convertBlobToBase64(blob: Blob): Promise<string> {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result as string);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+        });
+    }
 
-    async function onSubmit(values: UpdateUserProfileValues) {
-        // const newAvatarFile = croppedAvatar
-        //     ? new File([croppedAvatar], `avatar_${user.id}.webp`)
-        //     : undefined;
+    // Xử lý sự kiện khi nhấn nút
+    const onClickHandler = async () => {
+        try {
+            // Retrieve form values
+            const values = form.getValues();
 
-        // mutation.mutate(
-        //     {
-        //         values,
-        //         avatar: newAvatarFile,
-        //     },
-        //     {
-        //         onSuccess: () => {
-        //             setCroppedAvatar(null);
-        //             onOpenChange(false);
-        //         },
-        //     },
-        // );
+            // Log the retrieved values for debugging
+            console.log("Form Values:", values);
+            setIsLoading(true)
+            // Make an API request to update the user
+            const response = await clientRequest.put(`/api/users/update/${user._id}`, values);
+            if (response) {
+                toast({
+                    title: "Success",
+                    description: "Your profile has been updated successfully.",
+                    variant: "success"
+                });
+
+                setIsLoading(false);
+
+                // Close the modal
+                onOpenChange(false);
+                onProfileUpdate();
+            }
+            // Handle successful response (optional)
+            console.log("Update successful:", response.data);
+            // Add further actions (e.g., notify user or refresh data)
+        } catch (error) {
+            // Handle errors gracefully
+            console.error("Error updating user:", error);
+            setIsLoading(false)
+            // Optionally, notify the user about the error
+            if (error.response) {
+                console.log("Error details:", error.response.data);
+            }
+        }
+    };
+
+    // Cập nhật profilePic khi người dùng cắt ảnh hoặc chọn ảnh mới
+    function handleImageCropped(blob: Blob | null) {
+        setCroppedAvatar(blob);
+        if (blob) {
+            convertBlobToBase64(blob).then((base64) => {
+                form.setValue("profilePic", base64); // Cập nhật profilePic với giá trị Base64
+            });
+        }
     }
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
+            {isLoading && (
+                <Loading />
+            )}
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Edit profile</DialogTitle>
@@ -88,19 +135,19 @@ export default function EditProfileDialog({
                                 ? URL.createObjectURL(croppedAvatar)
                                 : user.profilePic || avatarPlaceholder
                         }
-                        onImageCropped={setCroppedAvatar}
+                        onImageCropped={handleImageCropped}
                     />
                 </div>
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+                    <div className="space-y-3">
                         <FormField
                             control={form.control}
-                            name="displayName"
+                            name="username"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Display name</FormLabel>
+                                    <FormLabel>Username</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="Your display name" {...field} />
+                                        <Input placeholder="Your username" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -123,12 +170,23 @@ export default function EditProfileDialog({
                                 </FormItem>
                             )}
                         />
-                        {/* <DialogFooter>
-                            <LoadingButton type="submit" loading={mutation.isPending}>
+                        {/* Hiển thị thông tin profilePic */}
+                        <div>
+                            <p>Current Avatar: </p>
+                            <Image
+                                src={form.watch("profilePic") || avatarPlaceholder}
+                                alt="Avatar preview"
+                                width={150}
+                                height={150}
+                                className="rounded-full object-cover"
+                            />
+                        </div>
+                        <DialogFooter>
+                            <LoadingButton onClick={onClickHandler} loading={isLoading}>
                                 Save
                             </LoadingButton>
-                        </DialogFooter> */}
-                    </form>
+                        </DialogFooter>
+                    </div>
                 </Form>
             </DialogContent>
         </Dialog>

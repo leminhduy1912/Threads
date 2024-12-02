@@ -1,8 +1,15 @@
-"use client"
-import { createContext, useContext } from "react";
+"use client";
+
+import { Session, User } from "lucia";
+import React, { createContext, useContext } from "react";
+
 interface SessionContext {
-    email: string;
+    user: User;
+    session: Session;
 }
+
+const SessionContext = createContext<SessionContext | null>(null);
+
 export default function SessionProvider({
     children,
     value,
@@ -19,4 +26,3 @@ export function useSession() {
     }
     return context;
 }
-const SessionContext = createContext<SessionContext | null>(null);

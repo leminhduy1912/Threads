@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
  import {generateTokenAndSetCookie} from "../utils/generateTokenAndsetCookie.js"
 import { v2 as cloudinary } from "cloudinary";
+import { getPublicIdFromUrl } from "../utils/getPublicIdOfImage.js";
 
 const getUserProfile = async (req, res) => {
 
@@ -163,7 +164,6 @@ const followUnFollowUser = async (req, res) => {
 const updateUser = async (req, res) => {
 	const { name, email, username, password, bio } = req.body;
     let {profilePic} = req.body;
-
 	const userId = req.user._id;
 	try {
 		let user = await User.findById(userId);
@@ -177,12 +177,13 @@ const updateUser = async (req, res) => {
 			const hashedPassword = await bcrypt.hash(password, salt);
 			user.password = hashedPassword;
 		}
-
+console.log("pic old user",user.profilePic)
 		if (profilePic) {
 			if (user.profilePic) {
-				await cloudinary.uploader.destroy(getPublicIdFromUrl(profilePic));
+				console.log("old user has pic")
+				await cloudinary.uploader.destroy(getPublicIdFromUrl(user.profilePic));
 			}
-
+			console.log("old user has no pic and updtae img")
 			const uploadedResponse = await cloudinary.uploader.upload(profilePic,{
 				folder: 'Threads',
 				use_filename: false,
@@ -223,7 +224,6 @@ const updateUser = async (req, res) => {
 
 const getSuggestedUsers = async (req, res) => {
 	try {
-		// exclude the current user from suggested users array and exclude users that current user is already following
 		const userId = req.user._id;
 		const usersFollowedByYou = await User.findById(userId).select("following");
 

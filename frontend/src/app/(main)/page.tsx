@@ -1,14 +1,23 @@
-
+"use client"
 import PostEditor from "@/components/posts/editor/PostEditor";
 import TrendsSidebar from "@/components/TrendsSidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import FollowingFeed from "./FollowingFeed";
 import ForYouFeed from "./ForYourFeed";
-
+import { useRouter } from 'next/navigation'
+import { useEffect } from "react";
 
 
 export default function Home() {
+    const router = useRouter();
+    useEffect(() => {
+        const storedUser = localStorage.getItem('user-threads');
+        const user = storedUser ? JSON.parse(storedUser) : null;
 
+        if (!user) {
+            router.push('/login');
+        }
+    }, [router]);
 
     return (
         <main className="flex w-full min-w-0 gap-5">

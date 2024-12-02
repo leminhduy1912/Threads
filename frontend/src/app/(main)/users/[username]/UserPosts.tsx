@@ -30,7 +30,7 @@ export default function UserPosts({ username }: UserPostsProps) {
         isFetchingNextPage,
         status,
     } = useInfiniteQuery({
-        queryKey: ["post-feed", "user-posts", username],
+        queryKey: ["post-feed"],
         queryFn: fetchPosts,
         getNextPageParam: (lastPage, allPages) => {
             // Determine if there is a next page

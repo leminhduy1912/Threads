@@ -47,7 +47,6 @@ export default function CommentInput({ post }: CommentInputProps) {
       setIsLoading(false); // Ensure loading state is reset
     }
   };
-
   const mutation = useMutation({
     mutationFn: putComment,
     onMutate: async () => {
@@ -58,7 +57,7 @@ export default function CommentInput({ post }: CommentInputProps) {
       console.log("New comment added:", newComment);
 
       // Update cache with new comment
-      queryClient.setQueryData(["comment"], (oldData: any) => {
+      queryClient.setQueryData(["comments", post._id], (oldData: any) => {
         if (!oldData) {
           return { pages: [[newComment]] };
         }
@@ -66,7 +65,7 @@ export default function CommentInput({ post }: CommentInputProps) {
         return {
           ...oldData,
           pages: oldData.pages.map((page: any) =>
-            Array.isArray(page) ? [newComment, ...page] : page
+            Array.isArray(page) ? [...page, newComment] : page // Append to the array
           ),
         };
       });
@@ -74,21 +73,52 @@ export default function CommentInput({ post }: CommentInputProps) {
       // Reset input and image
       setInput("");
       setImgUrl(null);
-
       setIsLoading(false);
-
     },
     onError: (error) => {
       console.error("Error adding comment:", error);
       setIsLoading(false);
-
-
     },
     onSettled: () => {
-      // Always set loading state to false
       setIsLoading(false);
     },
   });
+
+  // const mutation = useMutation({
+  //   mutationFn: putComment,
+  //   onMutate: async () => {
+  //     // Optionally handle optimistic updates here
+  //     setIsLoading(true);
+  //   },
+  //   onSuccess: (newComment) => {
+  //     console.log("New comment added:", newComment);
+
+  //     // Update cache with new comment
+  //     queryClient.setQueryData(["comments", post._id], (oldData: any) => {
+  //       if (!oldData) {
+  //         return { pages: [[newComment]] };
+  //       }
+
+  //       return {
+  //         ...oldData,
+  //         pages: oldData.pages.map((page: any) =>
+  //           Array.isArray(page) ? [newComment, ...page] : page
+  //         ),
+  //       };
+  //     });
+  //     // Reset input and image
+  //     setInput("");
+  //     setImgUrl(null);
+  //     setIsLoading(false);
+  //   },
+  //   onError: (error) => {
+  //     console.error("Error adding comment:", error);
+  //     setIsLoading(false);
+  //   },
+  //   onSettled: () => {
+  //     setIsLoading(false);
+  //   },
+  // });
 
 
   // Handle comment submission
@@ -103,25 +133,28 @@ export default function CommentInput({ post }: CommentInputProps) {
 
       return;
     }
-    const isToxic = await axios.post("https://toxic-moderator.onrender.com/predict", {
-      text: input,
-    });
-    //setIsLoading(true)
-    console.log("res toxic", typeof isToxic.data.prediction)
-    if (isToxic.data.prediction === "Toxic") {
-      console.log("toxic")
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
+    mutation.mutate();
+    //TOXIC COMMENT
 
-      });
-      setIsLoading(false)
-    } else {
-      console.log("non-toxic")
-      mutation.mutate();
-    }
+    // const isToxic = await axios.post("https://toxic-moderator.onrender.com/predict", {
+    //   text: input,
+    // });
+    // //setIsLoading(true)
+    // console.log("res toxic", typeof isToxic.data.prediction)
+    // if (isToxic.data.prediction === "Toxic") {
+    //   console.log("toxic")
+    //   toast({
+    //     variant: "destructive",
+    //     title: "Uh oh! Something went wrong.",
+    //     description: "There was a problem with your request.",
+    //     action: <ToastAction altText="Try again">Try again</ToastAction>,
+
+    //   });
+    //   setIsLoading(false)
+    // } else {
+    //   console.log("non-toxic")
+    //   mutation.mutate();
+    // }
 
 
 

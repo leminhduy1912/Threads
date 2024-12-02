@@ -15,14 +15,15 @@ import { loginSchema, LoginValues } from "@/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
-import { login } from "./action";
 import { useRouter } from "next/navigation";
+import clientRequest from "@/app/api/clientRequest";
+import { useToast } from "@/hooks/use-toast";
 
 export default function LoginForm() {
     const [error, setError] = useState<string>();
-
+    const router = useRouter()
     const [isPending, startTransition] = useTransition();
-
+    const { toast } = useToast();
     const form = useForm<LoginValues>({
         resolver: zodResolver(loginSchema),
         defaultValues: {
@@ -35,10 +36,17 @@ export default function LoginForm() {
         setError(undefined); // Clear previous errors
         startTransition(async () => {
             try {
-                const result = await login(values.username, values.password);
-                if (result) {
-                    // Navigate to home on successful login
-                    // router.push("/");
+                const payload = { username: values.username, password: values.password };
+                const result = await clientRequest.post("/api/users/signin", payload);
+                if (result.data) {
+                    console.log(result.data)
+                    localStorage.setItem('user-threads', JSON.stringify(result.data));
+                    toast({
+                        title: "Login Success",
+                        description: `Login as ${result.data.username} success`,
+                        variant: "success"
+                    });
+                    router.push("/");
                 } else {
                     // Handle error (e.g., display a message)
                     console.error('Login failed.');

@@ -8,7 +8,7 @@ const nextConfig: NextConfig = {
   },
   reactStrictMode: false,
   images: {
-    domains: ['th.bing.com'],
+    domains: ['th.bing.com', "res.cloudinary.com"],
   },
 
   // You can add more Next.js configurations here if needed

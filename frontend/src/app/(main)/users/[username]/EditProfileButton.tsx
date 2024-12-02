@@ -7,9 +7,10 @@ import EditProfileDialog from "./EditProfileDialog";
 
 interface EditProfileButtonProps {
     user: UserData;
+    onProfileUpdate: () => void;
 }
 
-export default function EditProfileButton({ user }: EditProfileButtonProps) {
+export default function EditProfileButton({ user, onProfileUpdate }: EditProfileButtonProps) {
     const [showDialog, setShowDialog] = useState(false);
 
     return (
@@ -21,6 +22,7 @@ export default function EditProfileButton({ user }: EditProfileButtonProps) {
                 user={user}
                 open={showDialog}
                 onOpenChange={setShowDialog}
+                onProfileUpdate={onProfileUpdate}
             />
         </>
     );

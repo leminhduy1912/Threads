@@ -97,7 +97,7 @@ interface UserProfileProps {
 
 export default function UserProfile({ username, postCount }: UserProfileProps) {
     const [user, setUser] = useState<UserData | null>(null);
-    const userCurrent = JSON.parse(localStorage.getItem("user-threads"))
+    const [userCurrent, setUserCurrent] = useState()
     const getProfileUser = async () => {
         try {
             const res = await clientRequest(`/api/users/profile/${username}`);
@@ -111,7 +111,13 @@ export default function UserProfile({ username, postCount }: UserProfileProps) {
             console.error("Error fetching user profile:", error);
         }
     };
-
+    useEffect(() => {
+        // Chỉ chạy trên client
+        const userData = localStorage.getItem("user-threads");
+        if (userData) {
+            setUserCurrent(JSON.parse(userData));
+        }
+    }, []);
     useEffect(() => {
         getProfileUser();
     }, [username]); // Only re-run the effect when `username` changes
@@ -147,7 +153,7 @@ export default function UserProfile({ username, postCount }: UserProfileProps) {
                     </div>
                 </div>
                 {user._id === userCurrent._id ? (
-                    <EditProfileButton user={user} />
+                    <EditProfileButton user={user} onProfileUpdate={getProfileUser} />
                 ) : (
                     <FollowButton user={user} />
                 )}

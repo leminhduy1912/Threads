@@ -6,6 +6,7 @@ import { Bookmark, Home } from "lucide-react";
 import Link from "next/link";
 import MessagesButton from "./MessageButton";
 import NotificationsButton from "./NotificationButton";
+import CreatePostButton from "./CreatePostButton";
 
 interface MenuBarProps {
     className?: string;
@@ -44,8 +45,8 @@ export default async function MenuBar({ className }: MenuBarProps) {
             />
             <MessagesButton initialState={{ unreadCount: unreadMessagesCount }} /> */}
             <NotificationsButton />
-            <MessagesButton />
-            <Button
+            <CreatePostButton />
+            {/* <Button
                 variant="ghost"
                 className="flex items-center justify-start gap-3"
                 title="Bookmarks"
@@ -55,7 +56,7 @@ export default async function MenuBar({ className }: MenuBarProps) {
                     <Bookmark />
                     <span className="hidden lg:inline">Bookmarks</span>
                 </Link>
-            </Button>
+            </Button> */}
         </div>
     );
 }

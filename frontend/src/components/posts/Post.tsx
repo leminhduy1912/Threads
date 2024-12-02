@@ -95,7 +95,7 @@ export default function Post({ post }: PostProps) {
 
           <UserTooltip user={userPosted}>
             <Link href={`/users/test`}>
-              <UserAvatar avatarUrl="https://th.bing.com/th/id/OIP.1mSyfMp-r01kxBYitbubbAHaHa?w=191&h=191&c=7&r=0&o=5&dpr=1.3&pid=1.7" />
+              <UserAvatar avatarUrl={userPosted.profilePic} />
             </Link>
           </UserTooltip>
           <div>
@@ -123,6 +123,7 @@ export default function Post({ post }: PostProps) {
       </Linkify>
 
       <img className="w-full" src={post.img} alt="" />
+
       <hr className="text-muted-foreground" />
       <div className="flex justify-between gap-5">
         <div className="flex items-center gap-5">

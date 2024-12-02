@@ -8,7 +8,6 @@ export default async function Layout({
     children: React.ReactNode;
 }) {
 
-
     return (
         <div className="flex min-h-screen flex-col">
             <Navbar />
@@ -18,5 +17,6 @@ export default async function Layout({
             </div>
             <MenuBar className="sticky bottom-0 flex w-full justify-center gap-5 border-t bg-card p-3 sm:hidden" />
         </div>
+
     );
 }

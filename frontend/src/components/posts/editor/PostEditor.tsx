@@ -16,24 +16,24 @@ import "./styles.css";
 // import useMediaUpload, { Attachment } from "./useMediaUpload";
 
 export default function PostEditor() {
-  const { user } = JSON.parse(localStorage.getItem("user-threads"));
+  const { user } = JSON.parse(localStorage.getItem("user-threads") || "");
 
   const mutation = useSubmitPostMutation();
 
-  const {
-    startUpload,
-    attachments,
-    isUploading,
-    uploadProgress,
-    removeAttachment,
-    reset: resetMediaUploads,
-  } = useMediaUpload();
+  // const {
+  //   startUpload,
+  //   attachments,
+  //   isUploading,
+  //   uploadProgress,
+  //   removeAttachment,
+  //   reset: resetMediaUploads,
+  // } = useMediaUpload();
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop: startUpload,
-  });
+  // const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  //   onDrop: startUpload,
+  // });
 
-  const { onClick, ...rootProps } = getRootProps();
+  // const { onClick, ...rootProps } = getRootProps();
 
   const editor = useEditor({
     extensions: [
@@ -53,41 +53,41 @@ export default function PostEditor() {
     }) || "";
 
   function onSubmit() {
-    mutation.mutate(
-      {
-        content: input,
-        mediaIds: attachments.map((a) => a.mediaId).filter(Boolean) as string[],
-      },
-      {
-        onSuccess: () => {
-          editor?.commands.clearContent();
-          resetMediaUploads();
-        },
-      },
-    );
+    // mutation.mutate(
+    //   {
+    //     content: input,
+    //     mediaIds: attachments.map((a) => a.mediaId).filter(Boolean) as string[],
+    //   },
+    //   {
+    //     onSuccess: () => {
+    //       editor?.commands.clearContent();
+    //       resetMediaUploads();
+    //     },
+    //   },
+    // );
   }
 
-  function onPaste(e: ClipboardEvent<HTMLInputElement>) {
-    const files = Array.from(e.clipboardData.items)
-      .filter((item) => item.kind === "file")
-      .map((item) => item.getAsFile()) as File[];
-    startUpload(files);
-  }
+  // function onPaste(e: ClipboardEvent<HTMLInputElement>) {
+  //   const files = Array.from(e.clipboardData.items)
+  //     .filter((item) => item.kind === "file")
+  //     .map((item) => item.getAsFile()) as File[];
+  //   startUpload(files);
+  // }
 
   return (
     <div className="flex flex-col gap-5 rounded-2xl bg-card p-5 shadow-sm">
       <div className="flex gap-5">
         <UserAvatar avatarUrl={user.avatarUrl} className="hidden sm:inline" />
-        <div {...rootProps} className="w-full">
+        <div className="w-full">
           <EditorContent
             editor={editor}
             className={cn(
               "max-h-[20rem] w-full overflow-y-auto rounded-2xl bg-background px-5 py-3",
-              isDragActive && "outline-dashed",
+
             )}
-            onPaste={onPaste}
+          //onPaste={onPaste}
           />
-          <input {...getInputProps()} />
+          {/* <input {...getInputProps()} /> */}
         </div>
       </div>
       {!!attachments.length && (

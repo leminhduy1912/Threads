@@ -43,7 +43,7 @@ const Notification = ({ notification }: NotificationProps) => {
                 <div className="space-y-3">
                     <UserAvatar avatarUrl={notification.sender.profilePic} size={36} />
                     <div>
-                        <span className="font-bold">{notification.sender.profilePic}</span>{" "}
+                        <span className="font-bold">{notification.sender.username}</span>{" "}
                         <span>{message}</span>
                     </div>
                     {notification.post && (

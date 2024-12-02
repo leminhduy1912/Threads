@@ -27,7 +27,7 @@ export default function Comments({ post }: CommentsProps) {
     isFetchingNextPage,
     status,
   } = useInfiniteQuery({
-    queryKey: ["comment", post._id], // Key riêng biệt cho từng bài viết
+    queryKey: ["comments", post._id], // Key riêng biệt cho từng bài viết
     queryFn: fetchComment,
     getNextPageParam: (lastPage, allPages) => {
       const currentPage = allPages.length;
@@ -64,10 +64,8 @@ export default function Comments({ post }: CommentsProps) {
   // Render giao diện comment
   return (
     <div className="space-y-3">
-      {/* Form nhập comment */}
       <CommentInput post={post} />
-
-      {/* Nút tải thêm comment */}
+      {/* load more button */}
       {hasNextPage && (
         <Button
           variant="link"
