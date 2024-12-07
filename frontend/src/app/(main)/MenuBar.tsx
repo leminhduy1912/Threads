@@ -46,17 +46,7 @@ export default async function MenuBar({ className }: MenuBarProps) {
             <MessagesButton initialState={{ unreadCount: unreadMessagesCount }} /> */}
             <NotificationsButton />
             <CreatePostButton />
-            {/* <Button
-                variant="ghost"
-                className="flex items-center justify-start gap-3"
-                title="Bookmarks"
-                asChild
-            >
-                <Link href="/bookmarks">
-                    <Bookmark />
-                    <span className="hidden lg:inline">Bookmarks</span>
-                </Link>
-            </Button> */}
+
         </div>
     );
 }

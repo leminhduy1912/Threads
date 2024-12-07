@@ -1,51 +1,37 @@
-"use client"
-import { validateRequest } from "@/auth";
+
 import FollowButton from "@/components/FollowButton";
 import Linkify from "@/components/Linkify";
 import Post from "@/components/posts/Post";
 import UserAvatar from "@/components/UserAvatar";
 import UserTooltip from "@/components/UserTooltip";
-import prisma from "@/lib/prisma";
 import { UserData } from "@/lib/types";
 import { Loader2 } from "lucide-react";
 import { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { cache, Suspense, useEffect } from "react";
+import { cache, Suspense } from "react";
 
 interface PageProps {
     params: { postId: string };
 }
 
-const getPost = cache(async (postId: string) => {
-    const post = await prisma.post.findUnique({
-        where: {
-            id: postId,
-        },
-        include: getPostDataInclude(loggedInUserId),
-    });
 
-    if (!post) notFound();
 
-    return post;
-});
+// export async function generateMetadata({
+//     params: { postId },
+// }: PageProps): Promise<Metadata> {
+//     const { user } = await validateRequest();
 
-export async function generateMetadata({
-    params: { postId },
-}: PageProps): Promise<Metadata> {
-    const { user } = await validateRequest();
+//     if (!user) return {};
 
-    if (!user) return {};
+//     const post = await getPost(postId, user.id);
 
-    const post = await getPost(postId, user.id);
-
-    return {
-        title: `${post.user.displayName}: ${post.content.slice(0, 50)}...`,
-    };
-}
+//     return {
+//         title: `${post.user.displayName}: ${post.content.slice(0, 50)}...`,
+//     };
+// }
 
 export default async function Page({ params: { postId } }: PageProps) {
-    useEffect(() => { }, [])
     const { user } = await validateRequest();
 
     if (!user) {

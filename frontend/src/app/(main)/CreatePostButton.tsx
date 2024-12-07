@@ -5,6 +5,7 @@ import { PostData, UserData } from "@/lib/types";
 import { SquarePlus } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import CreatePostDialog from "./create-post/CreatePostDialog";
 
 //import EditProfileDialog from "./EditProfileDialog";
 
@@ -12,21 +13,34 @@ import { useState } from "react";
 
 export default function CreatePostButton() {
 
-
+    const [showDialog, setShowDialog] = useState(false);
     return (
-        <Button
-            variant="ghost"
-            className="flex items-center justify-start gap-3"
-            title="Messages"
-            asChild
-        >
-            <Link href="/create-post">
-                <div className="relative">
-                    <SquarePlus />
+        <>
 
+            <Button
+                variant="ghost"
+                className="flex items-center justify-start gap-3"
+                title="Messages"
+                asChild
+                onClick={() => setShowDialog(true)}
+            >
+                <div>
+
+
+                    <div className="relative">
+                        <SquarePlus />
+
+                    </div>
+                    <span className="hidden lg:inline">Create Post</span>
                 </div>
-                <span className="hidden lg:inline">Create Post</span>
-            </Link>
-        </Button>
+            </Button>
+            <CreatePostDialog
+                //user={user}
+                open={showDialog}
+                onOpenChange={setShowDialog}
+
+            />
+        </>
+
     );
 }

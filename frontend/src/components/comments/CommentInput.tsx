@@ -5,12 +5,12 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { usePreviewImg } from "@/hooks/usePreviewImg";
-import clientRequest from "@/app/api/clientRequest";
+import clientRequest, { toxicCommentRequest, toxicImageRequest } from "@/app/api/clientRequest";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Loading from "@/app/loading";
 import axios from "axios";
 import { useToast } from "@/hooks/use-toast"
-import { ToastAction } from "../ui/toast";
+
 
 interface CommentInputProps {
   post: PostData;
@@ -23,7 +23,19 @@ export default function CommentInput({ post }: CommentInputProps) {
   const { handleImageChange, imgUrl, setImgUrl, removeImage } = usePreviewImg();
   const queryClient = useQueryClient();
 
-
+  const notifyAuthor = async () => {
+    try {
+      const res = await clientRequest.post(`/api/notifications`, {
+        receiver: post.postedBy, // ID of the post author
+        type: 'comment', // ID of the new comment
+        content: "commented your post", // Notification type
+        post: post._id
+      });
+      console.log("Author notified successfully.", res.data);
+    } catch (error) {
+      console.error("Error while notifying the author:", error);
+    }
+  };
 
   const putComment = async () => {
     try {
@@ -74,6 +86,13 @@ export default function CommentInput({ post }: CommentInputProps) {
       setInput("");
       setImgUrl(null);
       setIsLoading(false);
+      toast({
+        variant: "success",
+        title: "Comment Added",
+        description: "Your comment was successfully added to the post.",
+      });
+
+      notifyAuthor();
     },
     onError: (error) => {
       console.error("Error adding comment:", error);
@@ -83,83 +102,72 @@ export default function CommentInput({ post }: CommentInputProps) {
       setIsLoading(false);
     },
   });
-
-  // const mutation = useMutation({
-  //   mutationFn: putComment,
-  //   onMutate: async () => {
-  //     // Optionally handle optimistic updates here
-  //     setIsLoading(true);
-  //   },
-  //   onSuccess: (newComment) => {
-  //     console.log("New comment added:", newComment);
-
-  //     // Update cache with new comment
-  //     queryClient.setQueryData(["comments", post._id], (oldData: any) => {
-  //       if (!oldData) {
-  //         return { pages: [[newComment]] };
-  //       }
-
-  //       return {
-  //         ...oldData,
-  //         pages: oldData.pages.map((page: any) =>
-  //           Array.isArray(page) ? [newComment, ...page] : page
-  //         ),
-  //       };
-  //     });
-  //     // Reset input and image
-  //     setInput("");
-  //     setImgUrl(null);
-  //     setIsLoading(false);
-  //   },
-  //   onError: (error) => {
-  //     console.error("Error adding comment:", error);
-  //     setIsLoading(false);
-  //   },
-  //   onSettled: () => {
-  //     setIsLoading(false);
-  //   },
-  // });
-
-
   // Handle comment submission
   const handleComment = async () => {
+    try {
+      setIsLoading(true);
 
-    if (!input.trim() && !imgUrl) {
-      console.log("button comment")
+      // Check for missing input
+      if (!input.trim() && !imgUrl) {
+        toast({
+          variant: "destructive",
+          title: "Missing Input",
+          description: "Please provide a comment or select an image to proceed.",
+        });
+        setIsLoading(false);
+        return; // Prevent further execution
+      }
+
+      // Check for harmful image
+      if (imgUrl) {
+        const isToxicImage = await axios.post("http://localhost:8080/detect", {
+          image: imgUrl,
+        });
+
+        if (isToxicImage.data.detections.length > 0) {
+          toast({
+            variant: "destructive",
+            title: "Unacceptable Image",
+            description: "The selected image contains harmful content. Please choose another image.",
+          });
+          setIsLoading(false);
+          return; // Prevent further execution
+        }
+      }
+
+      // Check for harmful text
+      if (input) {
+        const isToxicText = await axios.post("http://localhost:5000/predict", {
+          text: input,
+        });
+
+        if (isToxicText.data.prediction === "Toxic") {
+          toast({
+            variant: "destructive",
+            title: "Unacceptable Comment",
+            description: "Your comment contains harmful content. Please revise your text.",
+          });
+          setIsLoading(false);
+          return; // Prevent further execution
+        }
+      }
+
+      // Proceed with mutation if no toxicity is detected
+      mutation.mutate();
+    } catch (error) {
+      console.error("Error during comment submission:", error);
       toast({
         variant: "destructive",
-        description: "Please enter a comment or select an image.",
+        title: "Submission Failed",
+        description: "Something went wrong while submitting your comment. Please try again later.",
       });
-
-      return;
+    } finally {
+      setIsLoading(false);
     }
-    mutation.mutate();
-    //TOXIC COMMENT
-
-    // const isToxic = await axios.post("https://toxic-moderator.onrender.com/predict", {
-    //   text: input,
-    // });
-    // //setIsLoading(true)
-    // console.log("res toxic", typeof isToxic.data.prediction)
-    // if (isToxic.data.prediction === "Toxic") {
-    //   console.log("toxic")
-    //   toast({
-    //     variant: "destructive",
-    //     title: "Uh oh! Something went wrong.",
-    //     description: "There was a problem with your request.",
-    //     action: <ToastAction altText="Try again">Try again</ToastAction>,
-
-    //   });
-    //   setIsLoading(false)
-    // } else {
-    //   console.log("non-toxic")
-    //   mutation.mutate();
-    // }
-
-
-
-
   };
+
+
+
 
   return (
     <div className="flex flex-col">

@@ -5,7 +5,7 @@ import Post from "@/components/posts/Post";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import clientRequest from "../api/clientRequest";
 import { Loader2 } from "lucide-react";
-import Loading from "../loading";
+import PostsLoadingSkeleton from "@/components/posts/PostsLoadingSkeleton";
 
 
 export default function ForYouFeed() {
@@ -38,7 +38,7 @@ export default function ForYouFeed() {
 
     // Handle loading state
     if (status === "pending") {
-        return <Loading />;
+        return <PostsLoadingSkeleton />;
     }
 
     // Handle error state

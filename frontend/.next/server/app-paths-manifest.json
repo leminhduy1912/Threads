@@ -2,5 +2,6 @@
   "/(auth)/login/page": "app/(auth)/login/page.js",
   "/(main)/page": "app/(main)/page.js",
   "/(main)/users/[username]/page": "app/(main)/users/[username]/page.js",
-  "/(main)/notifications/page": "app/(main)/notifications/page.js"
+  "/(main)/notifications/page": "app/(main)/notifications/page.js",
+  "/(main)/create-post/page": "app/(main)/create-post/page.js"
 }

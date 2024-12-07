@@ -27,4 +27,4 @@ app.use('/api/users', userRoutes);
 app.use('/api/posts',postRoutes)
 app.use('/api/notifications',notificationRoutes)
 // Start server on the correct port
-app.listen(5000, () => console.log('Server started on port 5000'));
+app.listen(4000, () => console.log('Server started on port 5000'));

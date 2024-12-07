@@ -717,6 +717,9 @@ video {
 .mt-5 {
   margin-top: 1.25rem;
 }
+.mt-1 {
+  margin-top: 0.25rem;
+}
 .line-clamp-1 {
   overflow: hidden;
   display: -webkit-box;
@@ -1373,9 +1376,6 @@ video {
 }
 .outline {
   outline-style: solid;
-}
-.outline-dashed {
-  outline-style: dashed;
 }
 .ring-offset-background {
   --tw-ring-offset-color: hsl(var(--background));

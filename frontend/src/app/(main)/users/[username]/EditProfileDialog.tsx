@@ -34,7 +34,6 @@ import Image, { StaticImageData } from "next/image";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import Resizer from "react-image-file-resizer";
-import { useRouter } from "next/compat/router";
 
 interface EditProfileDialogProps {
     user: UserData;

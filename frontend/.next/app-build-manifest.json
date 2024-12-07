@@ -31,6 +31,11 @@
       "static/chunks/main-app.js",
       "static/chunks/app/(auth)/login/page.js"
     ],
+    "/(main)/create-post/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(main)/create-post/page.js"
+    ],
     "/(main)/notifications/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
