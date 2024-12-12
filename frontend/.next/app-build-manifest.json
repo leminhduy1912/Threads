@@ -26,26 +26,15 @@
       "static/chunks/main-app.js",
       "static/chunks/app/(main)/page.js"
     ],
-    "/(auth)/login/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(auth)/login/page.js"
-    ],
-    "/(main)/create-post/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(main)/create-post/page.js"
-    ],
     "/(main)/notifications/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/(main)/notifications/page.js"
     ],
-    "/(main)/users/[username]/page": [
+    "/(main)/posts/[postId]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/(main)/users/[username]/page.css",
-      "static/chunks/app/(main)/users/[username]/page.js"
+      "static/chunks/app/(main)/posts/[postId]/page.js"
     ]
   }
 }

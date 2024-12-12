@@ -17,7 +17,7 @@ interface PostProps {
 }
 
 export default function Post({ post }: PostProps) {
-  const user = JSON.parse(localStorage.getItem("user-threads"))
+  const user = JSON.parse(localStorage.getItem("user-threads") || "")
   console.log("re-render post")
 
   const handleLikeAndUnlike = async () => {
