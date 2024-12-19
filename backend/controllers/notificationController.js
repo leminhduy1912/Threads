@@ -13,7 +13,7 @@ export const getNotifications = async (req,res) => {
 			.sort({ createdAt: -1 }) // Sort by latest first
 			.skip(skip)
 			.limit(limit)
-			.populate("sender", "name profilePic") // Populate sender's name and profilePic
+			.populate("sender", "name username profilePic") // Populate sender's name and profilePic
 			.populate("post", "text img"); // Populate post details
 
             res.status(200).json(notifications);

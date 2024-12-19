@@ -78,7 +78,8 @@ const getPost = async (req, res) => {
 const deletePost = async (req, res) => {
 	try {
 		const post = await Post.findById(req.params.id);
-		console.log(Array.isArray(post.img)); // Kiểm tra post.img có phải là mảng không
+		console.log(post.img)
+		console.log(Array.isArray(post.img)); 
 
 		if (!post) {
 			return res.status(404).json({ error: "Post not found" });
@@ -89,78 +90,19 @@ const deletePost = async (req, res) => {
 		}
 
 		if (post.img) {
-			for (let url of post.img) {
-			  console.log("public image ", url);
-			   let  imgId = getPublicIdFromUrl(url);
+			  console.log("public image ", post.img);
+			   let  imgId = getPublicIdFromUrl(post.img);
 			  console.log("public image id", imgId);
-			   await cloudinary.uploader.destroy(imgId);
-			}
+			   await cloudinary.uploader.destroy(imgId);	
 		  }
-		  
-
 		await Post.findByIdAndDelete(req.params.id);
-
 		res.status(200).json({ message: "Post deleted successfully" });
 	} catch (err) {
 		res.status(500).json({ error: err.message });
 	}
 };
 
-// const likeUnlikePost = async (req, res) => {
-// 	try {
-// 		const { id: postId } = req.params;
-// 		const userId = req.user._id;
 
-// 		const post = await Post.findById(postId);
-
-// 		if (!post) {
-// 			return res.status(404).json({ error: "Post not found" });
-// 		}
-
-// 		const userLikedPost = post.likes.includes(userId);
-
-// 		if (userLikedPost) {
-// 			// Unlike post
-// 			await Post.updateOne({ _id: postId }, { $pull: { likes: userId } });
-// 			res.status(200).json({ message: "Unliked" });
-// 		} else {
-// 			// Like post
-// 			post.likes.push(userId);
-// 			await post.save();
-// 			res.status(200).json({ message: "Liked" });
-// 		}
-// 	} catch (err) {
-// 		res.status(500).json({ error: err.message });
-// 	}
-// };
-// const likeUnlikePost = async (req, res) => {
-//     try {
-//         const { id: postId } = req.params;
-//         const userId = req.user._id;
-
-//         const post = await Post.findById(postId);
-
-//         if (!post) {
-//             return res.status(404).json({ error: "Post not found" });
-//         }
-
-//         const userLikedPost = post.likes.includes(userId);
-
-//         if (userLikedPost) {
-//             // Unlike post
-//             await Post.updateOne({ _id: postId }, { $pull: { likes: userId,isLiked:false } });
-//             const updatedPost = await Post.findById(postId); // Fetch updated post
-//             res.status(200).json({ message: "Unliked", post: updatedPost });
-//         } else {
-//             // Like post
-//             post.likes.push(userId);
-//             const updatedPost = await post.save(); // Save and get updated post
-//             res.status(200).json({ message: "Liked", post: updatedPost });
-//         }
-//     } catch (err) {
-//         res.status(500).json({ error: err.message });
-//     }
-// };
 const likeUnlikePost = async (req, res) => {
     try {
         const { id: postId } = req.params;
@@ -203,7 +145,7 @@ const deleteReplyOrConversation = async (req, res) => {
 		const postId = req.params.id;
 		const userId = req.user._id;
 
-		// Tìm bài viết theo postId
+	
 		const post = await Post.findById(postId);
 		if (!post) {
 			return res.status(404).json({ message: "Post not found" });

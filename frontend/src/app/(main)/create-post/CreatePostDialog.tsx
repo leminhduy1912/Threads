@@ -108,6 +108,8 @@ export default function CreatePostDialog({ open, onOpenChange }: CreatePostDialo
                         description: "The selected image contains harmful content. Please choose another image.",
                     });
                     setIsLoading(false);
+                    form.setValue("img", "");
+                    setPreviewImage("")
                     return; // Prevent further execution
                 }
             }
@@ -123,6 +125,9 @@ export default function CreatePostDialog({ open, onOpenChange }: CreatePostDialo
                         description: "Your text contains harmful content. Please revise your text.",
                     });
                     setIsLoading(false);
+                    form.setValue("img", "");
+                    form.setValue("text", "");
+                    setPreviewImage("")
                     return; // Prevent further execution
                 }
             }
@@ -147,8 +152,12 @@ export default function CreatePostDialog({ open, onOpenChange }: CreatePostDialo
                 description: "There was an issue creating your post. Please try again.",
                 variant: "destructive",
             });
+            setPreviewImage("")
+            form.setValue("text", "");
         } finally {
             setIsLoading(false);
+            setPreviewImage("")
+            form.setValue("text", "");
         }
     };
 

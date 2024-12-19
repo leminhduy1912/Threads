@@ -31,10 +31,16 @@
       "static/chunks/main-app.js",
       "static/chunks/app/(main)/notifications/page.js"
     ],
-    "/(main)/posts/[postId]/page": [
+    "/(auth)/login/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(main)/posts/[postId]/page.js"
+      "static/chunks/app/(auth)/login/page.js"
+    ],
+    "/(main)/users/[username]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/(main)/users/[username]/page.css",
+      "static/chunks/app/(main)/users/[username]/page.js"
     ]
   }
 }

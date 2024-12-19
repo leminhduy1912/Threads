@@ -92,7 +92,7 @@ import EditProfileButton from "@/app/(main)/users/[username]/EditProfileButton";
 
 interface UserProfileProps {
     username: string;
-    postCount: number;
+
 }
 
 export default function UserProfile({ username, postCount }: UserProfileProps) {
@@ -144,12 +144,14 @@ export default function UserProfile({ username, postCount }: UserProfileProps) {
                     </div>
                     <div className="flex items-center gap-3">
                         <span>
-                            Posts:{" "}
+                            Following:{" "}
                             <span className="font-semibold">
-                                {formatNumber(postCount)}
+                                {user.following.length.toString()}
                             </span>
                         </span>
                         <FollowerCount count={user.followers.length.toString()} />
+
+
                     </div>
                 </div>
                 {user._id === userCurrent._id ? (

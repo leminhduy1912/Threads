@@ -11,13 +11,37 @@ import LikeButton from "./LikeButton";
 import { MessageSquare } from "lucide-react";
 import Comments from "../comments/Comments";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
+import PostMoreButton from "./PostMoreButton";
 
 interface PostProps {
   post: PostData;
 }
 
 export default function Post({ post }: PostProps) {
-  const user = JSON.parse(localStorage.getItem("user-threads") || "")
+  const [user, setUser] = useState(null)
+  const { toast } = useToast()
+  useEffect(() => {
+    try {
+      const userData = localStorage.getItem("user-threads");
+      if (userData) {
+        setUser(JSON.parse(userData));
+      } else {
+        toast({
+          variant: "destructive",
+          title: "User not found",
+          description: "Please log in to post a comment.",
+        });
+      }
+    } catch (error) {
+      console.error("Failed to parse user data:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Unable to load user data. Please log in again.",
+      });
+    }
+  }, []);
   console.log("re-render post")
 
   const handleLikeAndUnlike = async () => {
@@ -30,15 +54,29 @@ export default function Post({ post }: PostProps) {
   const [userPosted, setUserPosted] = useState<null | any>(null); // Use appropriate type for the user
   const [showComments, setShowComments] = useState(false)
   const queryClient = useQueryClient();
+  const notifyAuthor = async () => {
+    try {
+      if (user._id !== post.postedBy) {
+        const res = await clientRequest.post(`/api/notifications`, {
+          receiver: post.postedBy, // ID of the post author
+          type: 'like', // ID of the new comment
+          content: "liked your post", // Notification type
+          post: post._id
+        });
+        console.log("Author notified successfully.", res.data);
+      }
+
+    } catch (error) {
+      console.error("Error while notifying the author:", error);
+    }
+  };
   const mutation = useMutation({
     mutationFn: handleLikeAndUnlike,
     onMutate: async () => {
       console.log("on mutate");
     },
     onSuccess: (updatedPost) => {
-
-      console.log("Updated post:", updatedPost);
-
+      notifyAuthor()
       // Cập nhật bài viết trong cache thay vì thêm bài viết mới
       queryClient.setQueryData(["post-feed"], (oldData: any) => {
         if (!oldData) return;
@@ -79,13 +117,12 @@ export default function Post({ post }: PostProps) {
     }
   }, [post.postedBy]);
 
-  // Fetch user data on component mount
   useEffect(() => {
     getUser();
   }, [getUser]);
 
   if (!userPosted) {
-    return null; // Render nothing while user data is loading
+    return null;
   }
 
   return (
@@ -116,13 +153,18 @@ export default function Post({ post }: PostProps) {
             </Link>
           </div>
         </div>
-
+        {user._id == post.postedBy && (
+          <PostMoreButton
+            post={post}
+            className="opacity-0 transition-opacity group-hover/post:opacity-100"
+          />
+        )}
       </div>
       <Linkify>
         <div className="whitespace-pre-line break-words">{post.text}</div>
       </Linkify>
 
-      <img className="w-full" src={post.img} alt="" />
+      <img className="w-full h-[400px]" src={post.img} alt="" />
 
       <hr className="text-muted-foreground" />
       <div className="flex justify-between gap-5">

@@ -1,11 +1,11 @@
 
 import { PostData } from "@/lib/types";
 import { Loader2, SendHorizonal, Image, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { usePreviewImg } from "@/hooks/usePreviewImg";
-import clientRequest, { toxicCommentRequest, toxicImageRequest } from "@/app/api/clientRequest";
+import clientRequest from "@/app/api/clientRequest";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Loading from "@/app/loading";
 import axios from "axios";
@@ -22,16 +22,40 @@ export default function CommentInput({ post }: CommentInputProps) {
   const { toast } = useToast();
   const { handleImageChange, imgUrl, setImgUrl, removeImage } = usePreviewImg();
   const queryClient = useQueryClient();
-
+  const [user, setUser] = useState(null); // Manage user state safely
+  useEffect(() => {
+    try {
+      const userData = localStorage.getItem("user-threads");
+      if (userData) {
+        setUser(JSON.parse(userData));
+      } else {
+        toast({
+          variant: "destructive",
+          title: "User not found",
+          description: "Please log in to post a comment.",
+        });
+      }
+    } catch (error) {
+      console.error("Failed to parse user data:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Unable to load user data. Please log in again.",
+      });
+    }
+  }, [toast]);
   const notifyAuthor = async () => {
     try {
-      const res = await clientRequest.post(`/api/notifications`, {
-        receiver: post.postedBy, // ID of the post author
-        type: 'comment', // ID of the new comment
-        content: "commented your post", // Notification type
-        post: post._id
-      });
-      console.log("Author notified successfully.", res.data);
+      if (user._id !== post.postedBy) {
+        const res = await clientRequest.post(`/api/notifications`, {
+          receiver: post.postedBy, // ID of the post author
+          type: 'comment', // ID of the new comment
+          content: "commented your post", // Notification type
+          post: post._id
+        });
+        console.log("Author notified successfully.", res.data);
+      }
+
     } catch (error) {
       console.error("Error while notifying the author:", error);
     }

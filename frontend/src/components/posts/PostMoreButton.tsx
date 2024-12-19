@@ -1,5 +1,5 @@
 import { PostData } from "@/lib/types";
-import { MoreHorizontal, Trash2 } from "lucide-react";
+
 import { useState } from "react";
 import { Button } from "../ui/button";
 import {
@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import DeletePostDialog from "./DeletePostDialog";
+import { MoreHorizontal, Trash2 } from "lucide-react";
 
 interface PostMoreButtonProps {
   post: PostData;

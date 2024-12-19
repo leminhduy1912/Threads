@@ -5,30 +5,30 @@ const notificationSchema = new mongoose.Schema(
 		receiver: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "User",
-			required: true, // Người nhận thông báo
+			required: true, 
 		},
 		sender: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "User",
-			required: true, // Người gây ra hành động (like, comment, etc.)
+			required: true, 
 		},
 		type: {
 			type: String,
 			enum: [
-				"like", // Thông báo khi bài viết được thích
-				"comment", // Thông báo khi có bình luận
-				"reply", // Thông báo khi có trả lời tin nhắn
-				"follow", // Thông báo khi có người theo dõi
-				"message", // Thông báo khi nhận tin nhắn
+				"like",
+				"comment", 
+				"reply", 
+				"follow", 
+				"message",
 			],
 			required: true,
 		},
 		content: {
-			type: String, // Nội dung tùy chọn (ví dụ: "User A đã thích bài viết của bạn")
+			type: String, 
 		},
 		post: {
 			type: mongoose.Schema.Types.ObjectId,
-			ref: "Post", // Liên kết với bài viết nếu thông báo liên quan đến bài viết
+			ref: "Post", 
 		},
 		message: {
 			type: mongoose.Schema.Types.ObjectId,
