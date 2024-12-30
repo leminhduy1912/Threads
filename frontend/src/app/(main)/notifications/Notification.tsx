@@ -84,17 +84,17 @@ const Notification = ({ notification }: NotificationProps) => {
         { message: string; icon: JSX.Element; href: string }
     > = {
         follow: {
-            message: `${notification.sender.name + " " + notification.content}`,
+            message: `${notification.content}`,
             icon: <User2 className="size-7 text-primary" />,
             href: `/users/${notification.sender.username}`,
         },
         comment: {
-            message: `${notification.sender.name + " " + notification.content}`,
+            message: `${notification.content}`,
             icon: <MessageCircle className="size-7 fill-primary text-primary" />,
             href: notification.post ? `/posts/${notification.post._id}` : "#",
         },
         like: {
-            message: `${notification.sender.name + " " + notification.content}`,
+            message: `${notification.content}`,
             icon: <Heart className="size-7 fill-red-500 text-red-500" />,
             href: notification.post ? `/posts/${notification.post._id}` : "#",
         },

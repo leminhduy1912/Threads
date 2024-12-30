@@ -112,7 +112,6 @@ export default function UserProfile({ username, postCount }: UserProfileProps) {
         }
     };
     useEffect(() => {
-        // Chỉ chạy trên client
         const userData = localStorage.getItem("user-threads");
         if (userData) {
             setUserCurrent(JSON.parse(userData));
@@ -120,7 +119,7 @@ export default function UserProfile({ username, postCount }: UserProfileProps) {
     }, []);
     useEffect(() => {
         getProfileUser();
-    }, [username]); // Only re-run the effect when `username` changes
+    }, [username]);
 
     if (!user) {
         return <div>Loading user profile...</div>; // Handle loading state
@@ -157,7 +156,7 @@ export default function UserProfile({ username, postCount }: UserProfileProps) {
                 {user._id === userCurrent._id ? (
                     <EditProfileButton user={user} onProfileUpdate={getProfileUser} />
                 ) : (
-                    <FollowButton user={user} />
+                    <FollowButton user={user} currentUserId={userCurrent._id} />
                 )}
             </div>
             {user.bio && (

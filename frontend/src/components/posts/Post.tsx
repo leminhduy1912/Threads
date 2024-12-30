@@ -227,6 +227,7 @@ export default function Post({ post }: PostProps) {
   const [userPosted, setUserPosted] = useState<null | any>(null);
   const [showComments, setShowComments] = useState(false);
   const [currentPost, setCurrentPost] = useState(post);
+  console.log("current post", currentPost)
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -298,6 +299,13 @@ export default function Post({ post }: PostProps) {
   });
 
   const handleOnclickLikePost = () => {
+    setCurrentPost((prev) => ({
+      ...prev,
+      isLiked: !prev.isLiked,
+      likes: prev.isLiked
+        ? prev.likes.filter((like) => like !== user._id)
+        : [...prev.likes, user._id],
+    }));
     mutation.mutate();
   };
 
@@ -363,12 +371,19 @@ export default function Post({ post }: PostProps) {
       <hr className="text-muted-foreground" />
       <div className="flex justify-between gap-5">
         <div className="flex items-center gap-5">
+          {/* <LikeButton
+            postId={currentPost._id}
+            numOflike={currentPost.likes.length}
+            isLiked={currentPost.isLiked}
+            onClick={handleOnclickLikePost}
+          /> */}
           <LikeButton
             postId={currentPost._id}
             numOflike={currentPost.likes.length}
             isLiked={currentPost.isLiked}
             onClick={handleOnclickLikePost}
           />
+
           <CommentButton
             post={currentPost}
             onClick={() => setShowComments(!showComments)}
