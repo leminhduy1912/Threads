@@ -67,7 +67,7 @@ export default function LikeButton({ postId, numOflike, isLiked, onClick }: Like
           isLiked && "fill-red-500 text-red-500",
         )}
       />
-      <span className="hidden sm:inline">{numOflike + " "}likes</span>
+      <span className="hidden sm:inline">{numOflike + " "}like</span>
     </button>
 
   );

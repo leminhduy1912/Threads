@@ -4,6 +4,7 @@ export interface PostData {
     text: string;
     img: string[];
     likes: string[];
+    isLiked: boolean;
     replies: string[];
     createdAt: string;
     updatedAt: string;
